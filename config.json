@@ -18,5 +18,6 @@
     "wit": 900
   },
   "usePhone": true,
-  "saveDebugImages": false
+  "saveDebugImages": false,
+  "check_goals": false
 }

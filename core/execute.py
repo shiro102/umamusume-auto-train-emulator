@@ -789,7 +789,7 @@ def career_lobby():
         print(f"Mood: {mood}")
         print(f"Turn Left: {turn}")
         print(f"Criteria: {criteria} \n")
-
+        
         # URA SCENARIO
         if year == "Finale Season" and turn == "Race Day":
             print("[INFO] URA Finale")
@@ -821,25 +821,34 @@ def career_lobby():
             FIRST_TURN_DONE = True
 
         # Check if goals is not met criteria AND it is not Pre-Debut AND turn is less than 10 AND Goal is already achieved (for desktop only)
-        if not USE_PHONE:
-            if (
-                criteria.split(" ")[0] != "criteria"
-                and year != "Junior Year Pre-Debut"
-                and turn < 10
-                and criteria != "Goal Achieved"
-            ):
-                print("[INFO] Run for fans.")
-                race_found = do_race()
+        if config.get("check_goals", False) and (
+            criteria.split(" ")[0] != "criteria"
+            and year != "Junior Year Pre-Debut"
+            and turn < 5
+            and (criteria != "Goal Achieved" or "fan" in criteria.lower() or criteria != "")
+        ):
+            from pymsgbox import confirm
+            print(
+                f"[WARNING] Goal not Achieved and only {turn} turn left, run may fail. Please run for fans."
+            )
+            result = confirm(
+                text=f"Goal not Achieved and only {turn} turn left, run may fail. Please run for fans and then close this window.",
+                title="Goal not Achieved",
+                buttons=["OK"],
+            )
 
-                if race_found:
-                    continue
-                else:
-                    # If there is no race matching to aptitude, go back and do training instead
-                    click(
-                        img="assets/buttons/back_btn.png",
-                        text="[INFO] Race not found. Proceeding to training.",
-                    )
-                    time.sleep(0.5)
+            # print("[INFO] Run for fans.")
+            # race_found = do_race()
+
+            # if race_found:
+            #     continue
+            # else:
+            #     # If there is no race matching to aptitude, go back and do training instead
+            #     click(
+            #         img="assets/buttons/back_btn.png",
+            #         text="[INFO] Race not found. Proceeding to training.",
+            #     )
+            #     time.sleep(0.5)
 
         year_parts = year.split(" ")
         # If Prioritize G1 Race is true, check G1 race every turn
@@ -870,6 +879,7 @@ def career_lobby():
         results_training = check_training()
 
         best_training = do_something(results_training)
+        print(f"[INFO] Best training: {best_training}")
         if best_training == "PRIORITIZE_RACE":
             print("[INFO] Prioritizing race due to insufficient support cards.")
 
@@ -914,7 +924,7 @@ def career_lobby():
                     do_train(best_training)
                 else:
                     do_rest()
-        elif best_training == "Rest":
+        elif best_training == "rest":
             do_rest()
             continue
         elif best_training:

@@ -94,5 +94,49 @@
   "Full-Power Eating!": {
     "key": "eating",
     "choice": 2
+  },
+  "What Should I Do?": {
+    "key": "what should i",
+    "choice": 2
+  },
+  "Meaty Heaven": {
+    "key": "meaty heaven",
+    "choice": 2
+  },
+  "Serial Riddler": {
+    "key": "serial riddler",
+    "choice": 2
+  },
+  "Taste of Home": {
+    "key": "taste of home",
+    "choice": 2
+  },
+  "Secret to Strength": {
+    "key": "secret to strength",
+    "choice": 2
+  },
+  "Catching the Rythm": {
+    "key": "catching the rythm",
+    "choice": 2
+  },
+  "I Can Unwind Outdoors Too": {
+    "key": "can unwind",
+    "choice": 2
+  },
+  "Bakushin?! Class?!": {
+    "key": "bakushin",
+    "choice": 2
+  },
+  "A Page about Apples": {
+    "key": "a page about",
+    "choice": 2
+  },
+  "Bottomless Pit": {
+    "key": "bottomless pit",
+    "choice": 2
+  },
+  "A Little Can't Hurt": {
+    "key": "a little ca",
+    "choice": 2
   }
 }

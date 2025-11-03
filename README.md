@@ -104,7 +104,8 @@ You can edit your configuration in `config.json`
     "wit": 600
   },
   "usePhone": true,
-  "saveDebugImages": false
+  "saveDebugImages": false,
+  "check_goals": false
 }
 ```
 
@@ -161,6 +162,9 @@ You can add more events according to your support cards in `events.json`
 `saveDebugImages` (boolean) - 
 - Ignore unless you want to test the code
 
+`saveDebugImages` (boolean) - 
+- Trigger check if goal has been met for the current Uma, avoid run fails (for example for Oguri Cap)
+- NOTE: THIS FEATURE DOES NOT HAVE HIGH ACCURACY
 
 Make sure the values match exactly as expected, typos might cause errors.
 
@@ -240,8 +244,8 @@ Dự án này được lấy cảm hứng từ [shiokaze/UmamusumeAutoTrainer](h
 - Kiểm tra điểm kỹ năng để mua kỹ năng thủ công
 - Giới hạn chỉ số để tránh huấn luyện quá mức
 - Cải thiện logic huấn luyện với xử lý thẻ hỗ trợ tốt hơn
-- Yêu cầu tối thiểu số thẻ hỗ trợ cho huấn luyệ
-- Có phiên bản mobile sẽ ko dùng chuột bạn (bản PC sẽ dùng). Nhưng bản mobile sẽ chậm hơn phone từ 5 tới 10p cho mỗi run
+- Yêu cầu tối thiểu số thẻ hỗ trợ cho huấn luyện
+- Có phiên bản mobile sẽ ko dùng chuột (bản PC sẽ dùng). Nhưng bản mobile sẽ chậm hơn phone từ 10p tới 15p cho mỗi run
 
 ### Bắt đầu
 
@@ -341,6 +345,7 @@ Bạn cũng có thể thêm events và option vào trong file `events.json` dự
 - `stat_caps` (object): Giá trị tối đa cho từng chỉ số. Bot sẽ bỏ qua huấn luyện các chỉ số đã đạt giới hạn.
 - `usePhone` (boolean): Chọn phiên bản Steam hoặc giả lập Mumu.
 - `saveDebugImages` (boolean): Bỏ qua trừ khi bạn muốn kiểm tra mã nguồn.
+- `saveDebugImages` (boolean): Check xem goal đã hoàn thành hay chưa (dùng tốt cho Uma có goal khó như Oguri Cap). NOTE: CHỨC NĂNG NÀY KO CÓ Độ CHÍNH XÁC CAO
 
 Hãy đảm bảo các giá trị nhập đúng như yêu cầu, sai chính tả có thể gây lỗi.
 

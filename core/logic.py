@@ -57,7 +57,7 @@ def most_support_card(results):
         all_others_bad
         and wit_data
         and int(wit_data["failure"]) <= MAX_FAILURE
-        and wit_data["total_support"] >= 2
+        and wit_data["total_support"] >= 3
     ):
         print(
             "\n[INFO] All trainings are unsafe, but WIT is safe and has enough support cards."
@@ -65,7 +65,7 @@ def most_support_card(results):
         return "wit"
 
     filtered_results = {
-        k: v for k, v in results.items() if int(v["failure"]) <= MAX_FAILURE
+        k: v for k, v in results.items() if int(v["failure"]) <= MAX_FAILURE and k != "wit"
     }
 
     if not filtered_results:
@@ -105,18 +105,18 @@ def most_support_card(results):
 
 # Do rainbow training
 def rainbow_training(results):
-    rainbow_candidates = {}
+    # Get spd failure rate
+    spd_failure_rate = results.get("spd", {}).get("failure", 0)
 
-    for stat, data in results.items():
-        if (int(data["failure"]) >= 5 and data["support"].get(stat, 0) == 1):
-            rainbow_candidates["rest"] = "Rest"
-        # Get rainbow training (tolerance for high failure rate when number of rainbow support card is high
-        if (int(data["failure"]) <= 25 and data["support"].get(stat, 0) >= 2):
-            rainbow_candidates[stat] = data
+    # Get rainbow training (tolerance for high failure rate when number of rainbow support card is high
+    rainbow_candidates = {
+        stat: data
+        for stat, data in results.items()
+        if (int(data["failure"]) <= 5 and data["support"].get(stat, 0) > 0)
+        or (int(data["failure"]) <= 25 and data["support"].get(stat, 0) >= 2)
+        or (int(data["failure"]) <= 45 and data["support"].get(stat, 0) >= 3)
+    }
 
-        if (int(data["failure"]) <= 45 and data["support"].get(stat, 0) >= 3):
-            rainbow_candidates[stat] = data
-    
     if not rainbow_candidates:
         print("\n[INFO] No rainbow training found under failure threshold.")
         return None
@@ -124,13 +124,26 @@ def rainbow_training(results):
     # Find support card rainbow in training
     best_rainbow = max(
         rainbow_candidates.items(),
-        key=lambda x: (x[1]["support"].get(x[0], 0), -get_stat_priority(x[0])),
+        key=lambda x: (x[1]["support"].get(x[0], 0), - get_stat_priority(x[0])),
     )
 
-    best_key, best_data = best_rainbow
-    print(
-        f"\n[INFO] Rainbow training selected: {best_key.upper()} with {best_data['support'][best_key]} rainbow supports and {best_data['failure']}% fail chance"
-    )
+    # If only 1 support/rainbow card and failure rate more than 5%, prefer choosing to rest
+    if best_rainbow[1].get("total_support", 0) <= 1 and int(best_rainbow[1].get("failure", 0)) > 5:
+        best_key, best_data = "rest", best_rainbow[1]
+    else:
+        best_key, best_data = best_rainbow
+
+    # If key is wit, and spd failure rate more than 5%, prefer choosing to rest, because wit training has lower failure rate
+    if best_key == "wit":
+        if spd_failure_rate > 5:
+            best_key = "rest"
+
+    if best_key == "rest":
+        print("[INFO] Choosing to rest because only 1 support/rainbow card and failure rate more than 5%")
+    else:
+        print(
+            f"\n[INFO] Rainbow training selected: {best_key.upper()} with {best_data['support'][best_key]} rainbow supports and {best_data['failure']}% fail chance"
+        )
     return best_key
 
 
