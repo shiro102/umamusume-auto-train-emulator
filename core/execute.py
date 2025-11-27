@@ -955,7 +955,6 @@ def career_lobby():
         # Mood check, not checking in the first turn of Pre-Debut or if scenario is not Aoharu
         if (
             mood_index < minimum_mood
-            and SCENARIO != 2
             and (year == "Junior Year Pre-Debut" and not FIRST_TURN_DONE)
         ):
             print("[INFO] Mood is low, trying recreation to increase mood")
@@ -968,17 +967,17 @@ def career_lobby():
         # Check if goals is not met criteria AND it is not Pre-Debut AND turn is less than 10 AND Goal is already achieved (for desktop only)
         if (
             year != "Junior Year Pre-Debut"
-            and "criteria" not in criteria.lower()
-            and turn < 5
+            and turn < 7
             and ("fan" in criteria.lower() or criteria != "")
+            and "junior" not in criteria.lower()
         ):
             from pymsgbox import confirm
             print(
-                f"[WARNING] Goal not Achieved and only {turn} turn left, run may fail. Please run for fans."
+                f"[WARNING] Goal may not be achieved and only {turn} turns left, run may fail. Please check the goal."
             )
             result = confirm(
-                text=f"Goal not Achieved and only {turn} turn left, run may fail. Please run for fans and then close this window.",
-                title="Goal not Achieved",
+                text=f"Goal may not be achieved and only {turn} turns left, run may fail. Please check the goal, close this window and do that manually.",
+                title="Goal not achieved",
                 buttons=["OK"],
             )
 

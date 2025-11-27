@@ -2,7 +2,8 @@
   "priority_stat": [
     "spd",
     "sta",
-    "pwr"
+    "pwr",
+    "wit"
   ],
   "minimum_mood": "GOOD",
   "maximum_failure": 15,
