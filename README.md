@@ -13,9 +13,8 @@ This project is inspired by [shiokaze/UmamusumeAutoTrainer](https://github.com/s
 2. [Tiếng Việt](#tiếng-việt)
 
 # UPDATE:
-- Disabled GUTS and FRIEND check because they are useless for training now
-- ALL events are now stored in events.json. You can add more events according to your support cards
-- For Phone, always click GUTS first and then start clicking other train modes to avoid being unable to detect other mode.
+- Support Aoharu Scenario
+- Support Riko Kashimoto date
 
 Get new updates using "git pull" in Command Prompt or PowerShell at the tool's folder location
 

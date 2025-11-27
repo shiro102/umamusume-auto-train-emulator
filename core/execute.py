@@ -727,6 +727,10 @@ def career_lobby():
     # Program start
     while True:
 
+        # Warning for Aoharu scenario
+        if SCENARIO == 2:
+            print(f"[INFO] IMPORTANT: please customize event 'Team at Last' in events.json for the skill you want to get at the end")
+
         year = check_current_year()
         event_name = check_event_name()
 

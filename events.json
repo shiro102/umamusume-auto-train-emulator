@@ -1,4 +1,8 @@
 {
+  "Team at Last": {
+    "key": "team at last",
+    "choice": 2
+  },
   "Extra Training": {
     "key": "extra training",
     "choice": 2
@@ -141,10 +145,6 @@
   },
   "Tutorial": {
     "key": "tutorial",
-    "choice": 2
-  },
-  "Team at Last": {
-    "key": "team at last",
     "choice": 2
   },
   "Magical Flowers": {
