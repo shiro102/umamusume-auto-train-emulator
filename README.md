@@ -1,8 +1,8 @@
-# Umamusume Auto Train Phone Simulator & PC
+# Umamusume Auto Train Phone Emulator
 
 This is a fork from [samsulpanjul/umamusume-auto-train](https://github.com/samsulpanjul/umamusume-auto-train)
 
-Like the title says, this is a simple auto-training for Umamusume.
+If you ever get tired during or after a bad run and don't want to keep training, or if you just want to farm sparks lazily, this is the solution for you. This is a simple auto-training for Umamusume.
 
 This project is inspired by [shiokaze/UmamusumeAutoTrainer](https://github.com/shiokaze/UmamusumeAutoTrainer)
 
