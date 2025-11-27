@@ -343,7 +343,7 @@ def do_date():
     recreation_btn = locate_center_on_screen(
         "assets/buttons/recreation_btn.png",
         confidence=0.8 if not USE_PHONE else 0.7,
-        debug=True,
+        debug=False,
         name="recreation_btn",
     )
     if recreation_btn:
@@ -356,7 +356,7 @@ def do_date():
     else:
         recreation_aoharu_btn = locate_center_on_screen(
             "assets/buttons/recreation_btn_aoharu.png", confidence=0.8 if not USE_PHONE else 0.65,
-            debug=True,
+            debug=False,
             name="recreation_btn_aoharu",
         )
         if recreation_aoharu_btn:
@@ -372,7 +372,7 @@ def do_date():
     date_btn = locate_center_on_screen(
         "assets/icons/date_progress_bar.png",
         confidence=0.8 if not USE_PHONE else 0.65,
-        debug=True,
+        debug=False,
         name="date_progress_bar",
     )
 
@@ -724,13 +724,14 @@ def career_lobby():
     global FIRST_TURN_DONE
     global NEW_YEAR_EVENT_DONE
 
+    # Warning for Aoharu scenario
+    if SCENARIO == 2:
+        print("\n=======================================================================================\n")
+        print(f"[INFO] IMPORTANT: please customize event 'Team at Last' in events.json for the skill you want to get at the end")
+        print("\n=======================================================================================\n")
+
     # Program start
     while True:
-
-        # Warning for Aoharu scenario
-        if SCENARIO == 2:
-            print(f"[INFO] IMPORTANT: please customize event 'Team at Last' in events.json for the skill you want to get at the end")
-
         year = check_current_year()
         event_name = check_event_name()
 
@@ -787,11 +788,18 @@ def career_lobby():
         ):
             print("[INFO] Normal next button found, clicking...")
             continue
-
+        
+        locate_center_on_screen(
+            "assets/buttons/next_btn_aoharu.png",
+            confidence=0.8 if not USE_PHONE else 0.65,
+            min_search_time=0.2,
+            name="next_btn_aoharu",
+            debug=False,
+        )
         if click(
             img="assets/buttons/next_btn_aoharu.png",
             minSearch=0.2,
-            confidence=0.8 if not USE_PHONE else 0.65,
+            confidence=0.8 if not USE_PHONE else 0.7,
         ):
             print("[INFO] Aoharu next button found, clicking...")
             continue

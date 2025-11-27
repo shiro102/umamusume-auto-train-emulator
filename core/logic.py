@@ -274,7 +274,7 @@ def do_something(results):
                         confidence=0.65,
                         min_search_time=0.2,
                         name="date_aoharu",
-                        debug=True,
+                        debug=False,
                     )
                     if date_icon:
                         print("[INFO] Date found, choosing to date")
