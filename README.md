@@ -282,19 +282,19 @@ Bạn cũng có thể thêm events và option vào trong file `events.json` dự
 
 #### Tùy chọn cấu hình
 
-- `priority_stat` (mảng chuỗi): Xác định thứ tự ưu tiên huấn luyện chỉ số. Bot sẽ tập trung vào các chỉ số này theo thứ tự quan trọng.
+- `priority_stat` (chữ): Xác định thứ tự ưu tiên huấn luyện chỉ số. Bot sẽ tập trung vào các chỉ số này theo thứ tự quan trọng.
   - Giá trị hợp lệ: `"spd"`, `"sta"`, `"pwr"`, `"guts"`, `"wit"`
-- `minimum_mood` (chuỗi): Tâm trạng thấp nhất mà bot chấp nhận khi quyết định huấn luyện.
+- `minimum_mood` (chữ): Tâm trạng thấp nhất mà bot chấp nhận khi quyết định huấn luyện.
   - Giá trị hợp lệ (phân biệt hoa thường): `"GREAT"`, `"GOOD"`, `"NORMAL"`, `"BAD"`, `"AWFUL"`
   - **Ví dụ**: Nếu đặt là `"NORMAL"`, bot sẽ huấn luyện khi tâm trạng là `"NORMAL"` hoặc tốt hơn. Nếu thấp hơn, bot sẽ chọn giải trí.
-- `maximum_failure` (số nguyên): Xác suất thất bại tối đa (phần trăm) trước khi bỏ qua một lựa chọn huấn luyện.
+- `maximum_failure` (số nguyên): Xác suất thất bại tối đa (phần trăm) trước khi chọn rest.
   - Ví dụ: 10 nghĩa là bot sẽ tránh các bài tập có rủi ro thất bại trên 10%.
 - `skill_point_cap` (số nguyên): Điểm kỹ năng tối đa trước khi bot nhắc bạn sử dụng.
   - Bot sẽ tạm dừng vào ngày đua và hiển thị nhắc nhở nếu điểm kỹ năng vượt quá giới hạn này.
-- `enable_skill_point_check` (boolean): Bật/tắt tính năng kiểm tra giới hạn điểm kỹ năng.
+- `enable_skill_point_check` (yes/no): Bật/tắt tính năng kiểm tra giới hạn điểm kỹ năng.
 - `min_support` (số nguyên): Số thẻ hỗ trợ tối thiểu cần thiết cho huấn luyện (mặc định: 3). Nếu không đủ, bot sẽ đua thay vì huấn luyện. Huấn luyện WIT chỉ cần tối thiểu 2 thẻ hỗ trợ. Nếu muốn tắt, đặt giá trị này là 0.
 - `stat_caps` (object): Giá trị tối đa cho từng chỉ số. Bot sẽ bỏ qua huấn luyện các chỉ số đã đạt giới hạn.
-- `saveDebugImages` (boolean): Bỏ qua trừ khi bạn muốn kiểm tra mã nguồn.
+- `saveDebugImages` (yes/no): Bỏ qua trừ khi bạn muốn kiểm tra mã nguồn.
 
 Hãy đảm bảo các giá trị nhập đúng như yêu cầu, sai chính tả có thể gây lỗi.
 
