@@ -10,8 +10,9 @@ from utils.constants import get_regions_for_mode, MOOD_LIST
 with open("config.json", "r", encoding="utf-8") as file:
     config = json.load(file)
 
-USE_PHONE = config.get("usePhone", False)
-
+USE_PHONE = config.get("usePhone", True)
+SAVE_DEBUG = config.get("saveDebugImages", False)
+SCENARIO = config.get("scenario", 1)
 
 def get_config():
     return config
@@ -29,7 +30,7 @@ def stat_state():
 
     result = {}
     for stat, region in stat_regions.items():
-        img = enhanced_screenshot(region)
+        img = enhanced_screenshot(region, name=stat)
         val = extract_number(img)
         digits = "".join(filter(str.isdigit, val))
         result[stat] = int(digits) if digits.isdigit() else 0
@@ -37,7 +38,7 @@ def stat_state():
 
 
 # Check support card in each training
-def check_support_card(threshold=0.8, isPhone=False):
+def check_support_card(threshold=0.8):
     SUPPORT_ICONS = {
         "spd": "assets/icons/support_card_type_spd.png",
         "sta": "assets/icons/support_card_type_sta.png",
@@ -49,24 +50,46 @@ def check_support_card(threshold=0.8, isPhone=False):
 
     regions = get_regions_for_mode()
     count_result = {}
-
+    count_secondary = {}
+    hasCheckedSpirit = False
     for key, icon_path in SUPPORT_ICONS.items():
         time.sleep(0.2)
-        matches = match_template(
-            icon_path,
-            regions["SUPPORT_CARD_ICON_REGION"],
-            threshold if not USE_PHONE else 0.65,
-            debug=False,
-        )
-        count_result[key] = len(matches)
 
-    return count_result
+        # Check spirit card for scenario 2
+        if not hasCheckedSpirit and SCENARIO == 2:
+            matches = match_template(
+                icon_path,
+                secondary_templates={
+                    "spirit": "assets/icons/spirit.png",
+                    "spirit-bomb": "assets/icons/spirit-bomb.png",
+                },
+                region=regions["SUPPORT_CARD_ICON_REGION"],
+                threshold=threshold if not USE_PHONE else 0.67,
+                debug=False,
+                name=f"support_card_{key}",
+            )
+            hasCheckedSpirit = True
+            count_secondary["spirit"] = len(matches.get("secondary").get("spirit"))
+            count_secondary["spirit-bomb"] = len(matches.get("secondary").get("spirit-bomb"))
+        else:
+            matches = match_template(
+                icon_path,
+                region=regions["SUPPORT_CARD_ICON_REGION"],
+                threshold=threshold if not USE_PHONE else 0.67,
+                debug=False,
+                name=f"support_card_{key}",
+            )
+
+        count_result[key] = len(matches.get("primary"))
+
+
+    return count_result, count_secondary
 
 
 # Get failure chance (idk how to get energy value)
-def check_failure():
+def check_failure(name=None):
     regions = get_regions_for_mode()
-    failure = enhanced_screenshot(regions["FAILURE_REGION"])
+    failure = enhanced_screenshot(regions["FAILURE_REGION"], name=f"failure_{name}")
     failure_text = extract_text(failure).lower()
 
     if not failure_text.startswith("failure"):
@@ -95,7 +118,7 @@ def check_failure():
 # Check mood
 def check_mood():
     regions = get_regions_for_mode()
-    mood = capture_region(regions["MOOD_REGION"])
+    mood = capture_region(regions["MOOD_REGION"], name="mood")
     mood_text = extract_text(mood).upper()
 
     for known_mood in MOOD_LIST:
@@ -109,11 +132,14 @@ def check_mood():
 # Check turn
 def check_turn():
     regions = get_regions_for_mode()
-    turn = enhanced_screenshot(regions["TURN_REGION"])
+    turn = enhanced_screenshot(regions["TURN_REGION"], name="turn")
     turn_text = extract_text(turn)
 
     if "Race Day" in turn_text:
         return "Race Day"
+
+    if "GOAL" in turn_text:
+        return "Goal"
 
     # sometimes easyocr misreads characters instead of numbers
     cleaned_text = (
@@ -134,7 +160,7 @@ def check_turn():
 # Check year
 def check_current_year():
     regions = get_regions_for_mode()
-    year = enhanced_screenshot(regions["YEAR_REGION"])
+    year = enhanced_screenshot(regions["YEAR_REGION"], name="year")
     text = extract_text(year)
     return text
 
@@ -142,7 +168,7 @@ def check_current_year():
 # Check criteria
 def check_criteria():
     regions = get_regions_for_mode()
-    img = enhanced_screenshot(regions["CRITERIA_REGION"])
+    img = enhanced_screenshot(regions["CRITERIA_REGION"], name="criteria")
     text = extract_text(img)
     return text
 
@@ -150,7 +176,7 @@ def check_criteria():
 # Check event name
 def check_event_name():
     regions = get_regions_for_mode()
-    img = enhanced_screenshot(regions["EVENT_NAME_REGION"])
+    img = enhanced_screenshot(regions["EVENT_NAME_REGION"], name="event_name")
     text = extract_text(img)
     return text
 
@@ -158,7 +184,7 @@ def check_event_name():
 # Check skill points
 def check_skill_points():
     regions = get_regions_for_mode()
-    img = enhanced_screenshot(regions["SKILL_PTS_REGION"])
+    img = enhanced_screenshot(regions["SKILL_PTS_REGION"], name="skill_points")
     number = extract_number(img)
     digits = "".join(filter(str.isdigit, number))
     return int(digits) if digits.isdigit() else 0

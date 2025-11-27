@@ -16,7 +16,7 @@ try:
 except FileNotFoundError:
     config = {"usePhone": False}
 
-USE_PHONE = config.get("usePhone", False)
+USE_PHONE = config.get("usePhone", True)
 
 
 def save_debug_image(image: Image.Image, prefix: str = "debug") -> str:
@@ -47,7 +47,7 @@ def save_debug_image(image: Image.Image, prefix: str = "debug") -> str:
     return filepath
 
 
-def enhanced_screenshot(region=(0, 0, 1920, 1080), save_debug=False) -> Image.Image:
+def enhanced_screenshot(region=(0, 0, 1920, 1080), save_debug=False, name=None) -> Image.Image:
     # Check if usePhone is enabled
     if USE_PHONE:
         # Use ADB screenshot for phone mode
@@ -56,7 +56,7 @@ def enhanced_screenshot(region=(0, 0, 1920, 1080), save_debug=False) -> Image.Im
             if controller and controller.is_connected():
                 # Take full screenshot from phone
                 screenshot = controller.take_screenshot()
-
+                
                 if screenshot is not None:
                     # Convert numpy array to PIL Image
                     pil_img = Image.fromarray(screenshot)
@@ -66,6 +66,7 @@ def enhanced_screenshot(region=(0, 0, 1920, 1080), save_debug=False) -> Image.Im
 
                     # Crop to the specified region if not full screen
                     if region != (0, 0, 1920, 1080):
+                        # print(f"[DEBUG] Cropping to region: {region}")
                         pil_img = pil_img.crop(
                             (
                                 region[0],
@@ -84,7 +85,7 @@ def enhanced_screenshot(region=(0, 0, 1920, 1080), save_debug=False) -> Image.Im
 
                     # Save debug image if requested
                     if save_debug:
-                        save_debug_image(pil_img, "enhanced_screenshot")
+                        save_debug_image(pil_img, f"{name}_enhanced_screenshot")
                         time.sleep(1)
 
                     return pil_img
@@ -116,12 +117,12 @@ def enhanced_screenshot(region=(0, 0, 1920, 1080), save_debug=False) -> Image.Im
 
     # Save debug image if requested
     if save_debug:
-        save_debug_image(pil_img, "enhanced_screenshot")
+        save_debug_image(pil_img, f"{name}_enhanced_screenshot")
 
     return pil_img
 
 
-def capture_region(region=(0, 0, 1920, 1080), save_debug=False) -> Image.Image:
+def capture_region(region=(0, 0, 1920, 1080), save_debug=False, name=None) -> Image.Image:
     # Check if usePhone is enabled
     if USE_PHONE:
         # Use ADB screenshot for phone mode
@@ -146,7 +147,7 @@ def capture_region(region=(0, 0, 1920, 1080), save_debug=False) -> Image.Image:
                         )
 
                     if save_debug:
-                        save_debug_image(pil_img, "capture_region")
+                        save_debug_image(pil_img, f"{name}_capture_region")
 
                     return pil_img
                 else:

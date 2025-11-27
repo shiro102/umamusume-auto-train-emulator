@@ -58,11 +58,16 @@ with open("events.json", "r", encoding="utf-8") as file:
     predefined_events = json.load(file)
 
 MINIMUM_MOOD = config["minimum_mood"]
-PRIORITIZE_G1_RACE = config["prioritize_g1_race"]
-USE_PHONE = config.get("usePhone", False)
+PRIORITIZE_G1_RACE = False
+USE_PHONE = config.get("usePhone", True)
 NEW_YEAR_EVENT_DONE = False
 FIRST_TURN_DONE = False
-
+SCENARIO = config.get("scenario", 1)
+SCENARIO_NAME_MAPPING = {
+    1: "ura",
+    2: "aoharu",
+}
+SCENARIO_NAME = SCENARIO_NAME_MAPPING.get(SCENARIO, "ura")
 
 training_types = {
     "spd": (
@@ -97,8 +102,10 @@ def get_config():
     return config
 
 
-def click(img, confidence=0.8, minSearch=2, click=1, text=""):
-    btn = locate_center_on_screen(img, confidence=confidence, min_search_time=minSearch)
+def click(img, confidence=0.8, minSearch=0.2, click=1, text="", name=None):
+    btn = locate_center_on_screen(
+        img, confidence=confidence, min_search_time=minSearch, name=name
+    )
     if btn:
         if text:
             print(text)
@@ -169,15 +176,18 @@ def click_event_choice(choice_number, minSearch=0.2, confidence=0.8):
 
 
 def go_to_training():
+    print(f"[INFO] Going to training.")
     return click(
-        "assets/buttons/training_btn.png", confidence=0.8 if not USE_PHONE else 0.7
+        f"assets/buttons/training_btn_{SCENARIO_NAME}.png",
+        confidence=0.8 if not USE_PHONE else 0.7,
+        name=f"training_btn_{SCENARIO_NAME}",
     )
 
 
 def click_guts_button():
     """Dedicated function to click the guts training button with fallback templates"""
     btn = locate_center_on_screen(
-        training_types["guts"], confidence=0.8 if not USE_PHONE else 0.65
+        training_types["guts"], confidence=0.8 if not USE_PHONE else 0.65, name="guts"
     )
 
     # Try alternative templates if not found
@@ -210,7 +220,7 @@ def check_training():
 
     for key, icon_path in training_types.items():
         pos = locate_center_on_screen(
-            icon_path, confidence=0.8 if not USE_PHONE else 0.65
+            icon_path, confidence=0.8 if not USE_PHONE else 0.65, name=key
         )
 
         # Check for second icon option if first one is not found
@@ -227,6 +237,7 @@ def check_training():
                 confidence=0.8 if not USE_PHONE else 0.65,
             )
 
+        # click the training icon
         if pos:
             if USE_PHONE:
                 adb_mouse_down(pos.x, pos.y)
@@ -235,16 +246,34 @@ def check_training():
                 pyautogui.moveTo(pos, duration=0.1)
                 pyautogui.mouseDown()
 
-            support_counts = check_support_card()
+            # Check support card
+            support_counts, support_secondary_counts = check_support_card()
             total_support = sum(support_counts.values())
-            failure_chance = check_failure()
-            results[key] = {
-                "support": support_counts,
-                "total_support": total_support,
-                "failure": failure_chance,
-            }
-            print(f"[{key.upper()}] → {support_counts}, Fail: {failure_chance}%")
-            time.sleep(0.1)
+            failure_chance = check_failure(name=key)
+
+            # count total support
+            if SCENARIO == 2:
+                count_spirit = support_secondary_counts.get("spirit", 0)
+                count_spirit_bomb = support_secondary_counts.get("spirit-bomb", 0)
+                results[key] = {
+                    "support": support_counts,
+                    "total_support": total_support,
+                    "spirit": count_spirit,
+                    "spirit-bomb": count_spirit_bomb,
+                    "failure": failure_chance,
+                }
+                print(
+                    f"[{key.upper()}] → {support_counts}, Spirit: {count_spirit}, Spirit Bomb: {count_spirit_bomb}, Fail: {failure_chance}%"
+                )
+                time.sleep(0.1)
+            else:
+                results[key] = {
+                    "support": support_counts,
+                    "total_support": total_support,
+                    "failure": failure_chance,
+                }
+                print(f"[{key.upper()}] → {support_counts}, Fail: {failure_chance}%")
+                time.sleep(0.1)
 
     if USE_PHONE:
         # For ADB, release the mouse at the last position where it was pressed
@@ -310,12 +339,60 @@ def do_rest():
             pyautogui.click(rest_summber_btn)
 
 
+def do_date():
+    recreation_btn = locate_center_on_screen(
+        "assets/buttons/recreation_btn.png",
+        confidence=0.8 if not USE_PHONE else 0.7,
+        debug=True,
+        name="recreation_btn",
+    )
+    if recreation_btn:
+        if USE_PHONE:
+            adb_move_to(recreation_btn.x, recreation_btn.y, duration=0.15)
+            adb_click(recreation_btn.x, recreation_btn.y)
+        else:
+            pyautogui.moveTo(recreation_btn, duration=0.15)
+            pyautogui.click(recreation_btn)
+    else:
+        recreation_aoharu_btn = locate_center_on_screen(
+            "assets/buttons/recreation_btn_aoharu.png", confidence=0.8 if not USE_PHONE else 0.65,
+            debug=True,
+            name="recreation_btn_aoharu",
+        )
+        if recreation_aoharu_btn:
+            if USE_PHONE:
+                adb_move_to(recreation_aoharu_btn.x, recreation_aoharu_btn.y, duration=0.15)
+                adb_click(recreation_aoharu_btn.x, recreation_aoharu_btn.y)
+            else:
+                pyautogui.moveTo(recreation_aoharu_btn, duration=0.15)
+                pyautogui.click(recreation_aoharu_btn)
+
+    # Click date button
+    time.sleep(1.5)
+    date_btn = locate_center_on_screen(
+        "assets/icons/date_progress_bar.png",
+        confidence=0.8 if not USE_PHONE else 0.65,
+        debug=True,
+        name="date_progress_bar",
+    )
+
+    if date_btn:
+        if USE_PHONE:
+            adb_move_to(date_btn.x, date_btn.y, duration=0.15)
+            adb_click(date_btn.x, date_btn.y)
+    else:
+        print("[INFO] Date button not found.")
+        adb_move_to(30, 30, duration=0.15)
+        adb_click(30, 30)
+        do_rest()
+
+
 def do_recreation():
     recreation_btn = locate_center_on_screen(
-        "assets/buttons/recreation_btn.png", confidence=0.8 if not USE_PHONE else 0.7
+        "assets/buttons/recreation_btn.png", confidence=0.8 if not USE_PHONE else 0.65    
     )
     recreation_summer_btn = locate_center_on_screen(
-        "assets/buttons/rest_summer_btn.png", confidence=0.8 if not USE_PHONE else 0.7
+        "assets/buttons/rest_summer_btn.png", confidence=0.8 if not USE_PHONE else 0.65
     )
 
     if recreation_btn:
@@ -332,6 +409,17 @@ def do_recreation():
         else:
             pyautogui.moveTo(recreation_summer_btn, duration=0.15)
             pyautogui.click(recreation_summer_btn)
+    else:
+        recreation_aoharu_btn = locate_center_on_screen(
+            "assets/buttons/recreation_btn_aoharu.png", confidence=0.8 if not USE_PHONE else 0.6
+        )
+        if recreation_aoharu_btn:
+            if USE_PHONE:
+                adb_move_to(recreation_aoharu_btn.x, recreation_aoharu_btn.y, duration=0.15)
+                adb_click(recreation_aoharu_btn.x, recreation_aoharu_btn.y)
+            else:
+                pyautogui.moveTo(recreation_aoharu_btn, duration=0.15)
+                pyautogui.click(recreation_aoharu_btn)
 
 
 def do_race(prioritize_g1=False):
@@ -475,7 +563,9 @@ def race_select(prioritize_g1=False):
     if prioritize_g1:
         print("[INFO] Looking for G1 race.")
         for i in range(2):
-            race_card = match_template("assets/ui/g1_race.png", threshold=0.85)
+            race_card = match_template("assets/ui/g1_race.png", threshold=0.85).get(
+                "primary"
+            )
             print(f"[INFO] Race card found: {race_card}")
             if race_card:
                 for x, y, w, h in race_card:
@@ -579,13 +669,14 @@ def race_select(prioritize_g1=False):
 
 def race_prep():
     time.sleep(3.5)
-    print(f"[INFO] Finding view results button at time: {time.time()}")
+    start_time = time.time()
     view_result_btn = locate_center_on_screen(
         "assets/buttons/view_results.png",
         confidence=0.8 if not USE_PHONE else 0.6,
         min_search_time=12,
     )
-    print(f"[INFO] View result button found at time: {time.time()}")
+    elapsed = round(time.time() - start_time, 2)
+    print(f"[INFO] Took {elapsed} seconds to find view result button")
 
     if view_result_btn:
         if USE_PHONE:
@@ -607,14 +698,26 @@ def race_prep():
 
 
 def after_race():
-    print(f"[INFO] Finding after race first next button at time: {time.time()}")
+    # Click first next button
+    start_time = time.time()
     click(img="assets/buttons/next_btn.png", minSearch=2)
-    print(f"[INFO] Finding after race first next button at time: {time.time()}")
+    elapsed = round(time.time() - start_time, 2)
+    print(f"[INFO] Took {elapsed} seconds to click first next button")
     time.sleep(2)  # Raise a bit
     # pyautogui.click()
-    print(f"[INFO] Finding after race second next button at time: {time.time()}")
+
+    # Click second next button
+    start_time = time.time()
     click(img="assets/buttons/next2_btn.png", minSearch=3)
-    print(f"[INFO] Finding after race second next button at time: {time.time()}")
+    elapsed = round(time.time() - start_time, 2)
+    print(f"[INFO] Took {elapsed} seconds to click second next button")
+    time.sleep(2)
+
+    # Click third next button - fallback for Aoharu scenario
+    start_time = time.time()
+    click(img="assets/buttons/next_btn_aoharu.png", minSearch=2)
+    elapsed = round(time.time() - start_time, 2)
+    print(f"[INFO] Took {elapsed} seconds to click third next button")
 
 
 def career_lobby():
@@ -649,7 +752,7 @@ def career_lobby():
             for predefine_event_name, predefine_event_data in predefined_events.items():
                 if predefine_event_data["key"].lower() in event_name.lower():
                     print(
-                        f"[ACTION] {predefine_event_name} event found, clicking choice {predefine_event_data['choice']}"
+                        f"[ACTION] '{predefine_event_name}' event found, clicking choice {predefine_event_data['choice']}"
                     )
                     if click_event_choice(
                         predefine_event_data["choice"], minSearch=0.1, confidence=0.9
@@ -662,66 +765,6 @@ def career_lobby():
             if click_event_choice(1, minSearch=0.1, confidence=0.9):
                 print("[ACTION] Clicked choice 1")
                 continue
-
-            # support event belows, auto choose 1st option if not specified
-            # if (
-            #     "extra training" in event_name.lower()
-            # ):  # Always choose rest option for extra training event (depends on the Uma), change if needed
-            #     print(
-            #         "[ACTION] Extra Training event found, clicking choice 2 for energy"
-            #     )
-            #     if click_event_choice(2, minSearch=0.1, confidence=0.9):
-            #         print("[ACTION] Clicked choice 2")
-            #         continue
-            # elif (
-            #     "lovely training weather" in event_name.lower()
-            # ):  # FM event, choose 3rd for Perfect Condition
-            #     print(
-            #         "[ACTION] Lovely Training Weather event found, clicking choice 3 for Perfect Condition"
-            #     )
-            #     if click_event_choice(3, minSearch=0.1, confidence=0.9):
-            #         print("[ACTION] Clicked choice 3")
-            #         continue
-            # elif (
-            #     "preparing my special move" in event_name.lower()
-            # ):  # Biko Pegasus event, choose 2nd for energy
-            #     print(
-            #         "[ACTION] Preparing My Special Move event found, clicking choice 2 for energy"
-            #     )
-            #     if click_event_choice(2, minSearch=0.1, confidence=0.9):
-            #         print("[ACTION] Clicked choice 2")
-            #         continue
-            # elif (
-            #     "solo nighttime run" in event_name.lower()
-            # ):  # Manhattan Cafe event, choose 2nd for energy
-            #     print(
-            #         "[ACTION] Solo Nighttime Run event found, clicking choice 2 for energy"
-            #     )
-            #     if click_event_choice(2, minSearch=0.1, confidence=0.9):
-            #         print("[ACTION] Clicked choice 2")
-            #         continue
-            # elif (
-            #     "happenstance introduced" in event_name.lower()
-            # ):  # Agnes Tachyon event, choose 2nd for wit
-            #     print("[ACTION] Happenstance event found, clicking choice 2 for wit")
-            #     if click_event_choice(2, minSearch=0.1, confidence=0.9):
-            #         print("[ACTION] Clicked choice 2")
-            #         continue
-            # elif (
-            #     "just an acupuncturist" in event_name.lower()
-            # ):  # Just an acupuncturist event, choose 1st for energy
-            #     print("[ACTION] Acupuncturist event found, clicking choice 4")
-            #     if click_event_choice(4, minSearch=0.1, confidence=0.9):
-            #         print("[ACTION] Clicked choice 4")
-
-            #     time.sleep(0.5)
-            #     if click_event_choice(1, minSearch=0.1, confidence=0.9):
-            #         print("[ACTION] Clicked choice 1")
-            #         continue
-            # else:
-            #     if click_event_choice(1, minSearch=0.1, confidence=0.9):
-            #         print("[ACTION] Clicked choice 1")
-            #         continue
 
         ### Second check, inspiration
         if click(
@@ -738,6 +781,15 @@ def career_lobby():
             minSearch=0.2,
             confidence=0.8 if not USE_PHONE else 0.7,
         ):
+            print("[INFO] Normal next button found, clicking...")
+            continue
+
+        if click(
+            img="assets/buttons/next_btn_aoharu.png",
+            minSearch=0.2,
+            confidence=0.8 if not USE_PHONE else 0.65,
+        ):
+            print("[INFO] Aoharu next button found, clicking...")
             continue
 
         ### Fourth check, cancel button
@@ -748,9 +800,86 @@ def career_lobby():
         ):
             continue
 
+        ### Fifth check, special scenes for Scenarios
+        if SCENARIO != 1:
+            # AOHARU SCENARIO
+            # Click run button for team showdown
+            aoharu_run_btn = locate_center_on_screen(
+                "assets/buttons/aoharu_run_btn.png",
+                confidence=0.8,
+                name="aoharu_run_btn",
+                debug=False,
+            )
+
+            if aoharu_run_btn:
+                print("[INFO] Aoharu Scenario: Team showdown run detected")
+                adb_click(360, 1100)
+                time.sleep(2)
+
+                final_showdown = locate_center_on_screen(
+                    "assets/buttons/final_showdown_aoharu.png",
+                    confidence=0.55,
+                    min_search_time=2,
+                    name="final_showdown",
+                    debug=False,
+                )
+                if final_showdown:
+                    print("[INFO] Aoharu Scenario: Final showdown detected")
+                    adb_move_to(final_showdown.x, final_showdown.y, duration=0.175)
+                    adb_click(final_showdown.x, final_showdown.y)
+                    continue
+
+                # Choose middle team
+                time.sleep(1.5)
+                print("[INFO] Choosing middle team")
+                adb_move_to(360, 640, duration=0.2)
+                adb_click(360, 640)
+
+                # Click select opponent button
+                time.sleep(1.5)
+                print("[INFO] Clicking select opponent button")
+                adb_move_to(360, 640, duration=0.2)
+                adb_click(360, 1100)
+
+                # Begin Showdown button
+                time.sleep(2)
+                if click(
+                    img="assets/buttons/begin_showdown_aoharu.png",
+                    minSearch=2,
+                    confidence=0.65,
+                ):
+                    print("[INFO] Begin showdown button found, clicking...")
+
+                # See All Race Results button
+                adb_click(360, 640)
+                time.sleep(1.5)
+                print("[INFO] See All Race Results button")
+                click(
+                    img="assets/buttons/next_btn_aoharu.png",
+                    minSearch=0.2,
+                    confidence=0.8 if not USE_PHONE else 0.65,
+                )
+
+                # Click next button
+                time.sleep(1.5)
+                print("[INFO] Clicking next button")
+                click(img="assets/buttons/next_btn.png", minSearch=2)
+                time.sleep(1.5)
+
+                # Click next button
+                print("[INFO] Clicking next button for Aoharu scenario")
+                click(
+                    img="assets/buttons/next_btn_aoharu.png",
+                    minSearch=2,
+                    confidence=0.6,
+                )
+
         ### Check if current menu is in career lobby
         tazuna_hint = locate_center_on_screen(
-            "assets/ui/tazuna_hint.png", confidence=0.8, min_search_time=0.2
+            "assets/ui/tazuna_hint.png",
+            confidence=0.8,
+            min_search_time=0.2,
+            name="tazuna",
         )
 
         if tazuna_hint is None:
@@ -789,9 +918,11 @@ def career_lobby():
         print(f"Mood: {mood}")
         print(f"Turn Left: {turn}")
         print(f"Criteria: {criteria} \n")
-        
+
         # URA SCENARIO
-        if year == "Finale Season" and turn == "Race Day":
+        if (year == "Finale Season" and turn == "Race Day") or (
+            year == "Finale Underway" and turn == "Goal"
+        ):
             print("[INFO] URA Finale")
             ura()
             for i in range(2):
@@ -804,14 +935,16 @@ def career_lobby():
             continue
 
         # If calendar is race day, do race
-        if turn == "Race Day" and year != "Finale Season":
+        if (turn == "Race Day" or turn == "Goal") and year != "Finale Season":
             print("[INFO] Race Day.")
             race_day()
             continue
 
-        # Mood check, not checking in the first turn of Pre-Debut
-        if mood_index < minimum_mood and not (
-            year == "Junior Year Pre-Debut" and not FIRST_TURN_DONE
+        # Mood check, not checking in the first turn of Pre-Debut or if scenario is not Aoharu
+        if (
+            mood_index < minimum_mood
+            and SCENARIO != 2
+            and (year == "Junior Year Pre-Debut" and not FIRST_TURN_DONE)
         ):
             print("[INFO] Mood is low, trying recreation to increase mood")
             do_recreation()
@@ -821,11 +954,11 @@ def career_lobby():
             FIRST_TURN_DONE = True
 
         # Check if goals is not met criteria AND it is not Pre-Debut AND turn is less than 10 AND Goal is already achieved (for desktop only)
-        if config.get("check_goals", False) and (
-            criteria.split(" ")[0] != "criteria"
-            and year != "Junior Year Pre-Debut"
+        if (
+            year != "Junior Year Pre-Debut"
+            and "criteria" not in criteria.lower()
             and turn < 5
-            and (criteria != "Goal Achieved" or "fan" in criteria.lower() or criteria != "")
+            and ("fan" in criteria.lower() or criteria != "")
         ):
             from pymsgbox import confirm
             print(
@@ -851,6 +984,7 @@ def career_lobby():
             #     time.sleep(0.5)
 
         year_parts = year.split(" ")
+
         # If Prioritize G1 Race is true, check G1 race every turn
         if (
             PRIORITIZE_G1_RACE
@@ -877,7 +1011,7 @@ def career_lobby():
         # Last, do training
         time.sleep(1)
         results_training = check_training()
-
+        # print(f"[INFO] Results training: {json.dumps(results_training, indent=4)}")
         best_training = do_something(results_training)
         print(f"[INFO] Best training: {best_training}")
         if best_training == "PRIORITIZE_RACE":
@@ -926,6 +1060,9 @@ def career_lobby():
                     do_rest()
         elif best_training == "rest":
             do_rest()
+            continue
+        elif best_training == "date":
+            do_date()
             continue
         elif best_training:
             go_to_training()

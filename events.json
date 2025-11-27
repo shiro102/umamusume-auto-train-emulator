@@ -138,5 +138,17 @@
   "A Little Can't Hurt": {
     "key": "a little ca",
     "choice": 2
+  },
+  "Tutorial": {
+    "key": "tutorial",
+    "choice": 2
+  },
+  "Team at Last": {
+    "key": "team at last",
+    "choice": 2
+  },
+  "Magical Flowers": {
+    "key": "magical flowers",
+    "choice": 2
   }
 }

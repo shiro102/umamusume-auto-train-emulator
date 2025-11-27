@@ -1,33 +1,3 @@
-# Desktop region coordinates (1920x1080)
-SUPPORT_CARD_ICON_REGION_DESKTOP = (845, 155, 945, 700)
-MOOD_REGION_DESKTOP = (705, 125, 805 - 705, 150 - 125)
-TURN_REGION_DESKTOP = (260, 65, 370 - 260, 140 - 65)
-FAILURE_REGION_DESKTOP = (250, 770, 855 - 295, 835 - 770)
-YEAR_REGION_DESKTOP = (255, 35, 420 - 255, 60 - 35)
-CRITERIA_REGION_DESKTOP = (455, 85, 625 - 455, 115 - 85)
-SKILL_PTS_REGION_DESKTOP = (755, 777, 76, 40)
-EVENT_NAME_REGION_DESKTOP = (220, 190, 500 - 220, 230 - 190)
-
-# Phone region coordinates (720x1280)
-SUPPORT_CARD_ICON_REGION_PHONE = (590, 184, 680 - 590, 1014 - 184)
-MOOD_REGION_PHONE = (550, 148, 650 - 550, 178 - 148)
-TURN_REGION_PHONE = (18, 85, 139 - 18, 166 - 85)
-FAILURE_REGION_PHONE = (30, 913, 685 - 30, 990 - 913)
-YEAR_REGION_PHONE = (16, 41, 236 - 16, 66 - 41)
-CRITERIA_REGION_PHONE = (251, 101, 535 - 251, 131 - 101)
-SKILL_PTS_REGION_PHONE = (610, 921, 685 - 610, 968 - 921)
-EVENT_NAME_REGION_PHONE = (100, 230, 400 - 100, 290 - 230)
-
-# Default regions (for backward compatibility - uses desktop by default)
-SUPPORT_CARD_ICON_REGION = SUPPORT_CARD_ICON_REGION_DESKTOP
-MOOD_REGION = MOOD_REGION_DESKTOP
-TURN_REGION = TURN_REGION_DESKTOP
-FAILURE_REGION = FAILURE_REGION_DESKTOP
-YEAR_REGION = YEAR_REGION_DESKTOP
-CRITERIA_REGION = CRITERIA_REGION_DESKTOP
-SKILL_PTS_REGION = SKILL_PTS_REGION_DESKTOP
-EVENT_NAME_REGION = EVENT_NAME_REGION_DESKTOP
-
 MOOD_LIST = ["AWFUL", "BAD", "NORMAL", "GOOD", "GREAT", "UNKNOWN"]
 
 
@@ -36,44 +6,26 @@ def get_regions_for_mode():
     try:
         import json
 
+        # Load config
         with open("config.json", "r", encoding="utf-8") as file:
             config = json.load(file)
 
-        USE_PHONE = config.get("usePhone", False)
+        USE_PHONE = config.get("usePhone", True)
+        SCENARIO = config.get("scenario", 1)
+
+        # Load constants
+        with open("constants.json", "r", encoding="utf-8") as file:
+            constants = json.load(file)
+
+        scenario_constants = constants.get(f"scenario{SCENARIO}")
+        desktop_constants = scenario_constants.get("desktop")
+        phone_constants = scenario_constants.get("phone")
 
         if USE_PHONE:
-            # Return phone regions
-            return {
-                "SUPPORT_CARD_ICON_REGION": SUPPORT_CARD_ICON_REGION_PHONE,
-                "MOOD_REGION": MOOD_REGION_PHONE,
-                "TURN_REGION": TURN_REGION_PHONE,
-                "FAILURE_REGION": FAILURE_REGION_PHONE,
-                "YEAR_REGION": YEAR_REGION_PHONE,
-                "CRITERIA_REGION": CRITERIA_REGION_PHONE,
-                "SKILL_PTS_REGION": SKILL_PTS_REGION_PHONE,
-                "EVENT_NAME_REGION": EVENT_NAME_REGION_PHONE,
-            }
+            return phone_constants
         else:
-            # Return desktop regions
-            return {
-                "SUPPORT_CARD_ICON_REGION": SUPPORT_CARD_ICON_REGION_DESKTOP,
-                "MOOD_REGION": MOOD_REGION_DESKTOP,
-                "TURN_REGION": TURN_REGION_DESKTOP,
-                "FAILURE_REGION": FAILURE_REGION_DESKTOP,
-                "YEAR_REGION": YEAR_REGION_DESKTOP,
-                "CRITERIA_REGION": CRITERIA_REGION_DESKTOP,
-                "SKILL_PTS_REGION": SKILL_PTS_REGION_DESKTOP,
-                "EVENT_NAME_REGION": EVENT_NAME_REGION_DESKTOP,
-            }
+            return desktop_constants
+
     except Exception:
         # Fallback to desktop regions
-        return {
-            "SUPPORT_CARD_ICON_REGION": SUPPORT_CARD_ICON_REGION_DESKTOP,
-            "MOOD_REGION": MOOD_REGION_DESKTOP,
-            "TURN_REGION": TURN_REGION_DESKTOP,
-            "FAILURE_REGION": FAILURE_REGION_DESKTOP,
-            "YEAR_REGION": YEAR_REGION_DESKTOP,
-            "CRITERIA_REGION": CRITERIA_REGION_DESKTOP,
-            "SKILL_PTS_REGION": SKILL_PTS_REGION_DESKTOP,
-            "EVENT_NAME_REGION": EVENT_NAME_REGION_DESKTOP,
-        }
+        return desktop_constants

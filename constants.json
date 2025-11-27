@@ -1,0 +1,46 @@
+{
+    "scenario1": {
+        "desktop": {
+            "SUPPORT_CARD_ICON_REGION": [845, 155, 100, 545],
+            "MOOD_REGION": [705, 125, 100, 25],
+            "TURN_REGION": [260, 65, 110, 75],
+            "FAILURE_REGION": [250, 770, 560, 65],
+            "YEAR_REGION": [255, 35, 165, 25],
+            "CRITERIA_REGION": [455, 85, 170, 30],
+            "SKILL_PTS_REGION": [755, 777, 76, 40],
+            "EVENT_NAME_REGION": [220, 190, 280, 40]
+        },
+        "phone": {
+            "SUPPORT_CARD_ICON_REGION": [590, 184, 90, 830],
+            "MOOD_REGION": [550, 148, 100, 30],
+            "TURN_REGION": [18, 85, 121, 81],
+            "FAILURE_REGION": [30, 913, 655, 77],
+            "YEAR_REGION": [16, 41, 220, 25],
+            "CRITERIA_REGION": [251, 101, 284, 30],
+            "SKILL_PTS_REGION": [610, 921, 75, 47],
+            "EVENT_NAME_REGION": [100, 230, 300, 60]
+        }
+    },
+    "scenario2": {
+        "desktop": {
+            "SUPPORT_CARD_ICON_REGION": [845, 155, 100, 545],
+            "MOOD_REGION": [705, 125, 100, 25],
+            "TURN_REGION": [260, 65, 110, 75],
+            "FAILURE_REGION": [250, 770, 560, 65],
+            "YEAR_REGION": [255, 35, 165, 25],
+            "CRITERIA_REGION": [455, 85, 170, 30],
+            "SKILL_PTS_REGION": [755, 777, 76, 40],
+            "EVENT_NAME_REGION": [220, 190, 280, 40]
+        },
+        "phone": {
+            "SUPPORT_CARD_ICON_REGION": [560, 184, 135, 750],
+            "MOOD_REGION": [550, 148, 100, 30],
+            "TURN_REGION": [18, 75, 121, 55],
+            "FAILURE_REGION": [30, 900, 655, 77],
+            "YEAR_REGION": [150, 41, 220, 25],
+            "CRITERIA_REGION": [241, 98, 284, 33],
+            "SKILL_PTS_REGION": [610, 921, 75, 47],
+            "EVENT_NAME_REGION": [105, 230, 305, 60]
+        }
+    }
+}

@@ -5,7 +5,7 @@ import json
 with open("config.json", "r", encoding="utf-8") as file:
   config = json.load(file)
 
-USE_PHONE = config.get("usePhone", False)
+USE_PHONE = config.get("usePhone", True)
 
 from utils.adb_utils import adb_click
 from utils.image_recognition import locate_center_on_screen

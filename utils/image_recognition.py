@@ -14,7 +14,7 @@ try:
 except FileNotFoundError:
     config = {"usePhone": False}
 
-USE_PHONE = config.get("usePhone", False)
+USE_PHONE = config.get("usePhone", True)
 BEST_SCALES = 0.8
 
 def save_debug_image(
@@ -23,6 +23,7 @@ def save_debug_image(
     match_location,
     confidence,
     template_path,
+    name = None,
     debug_dir="debug_images",
 ):
     """Save debug images for manual verification"""
@@ -47,11 +48,11 @@ def save_debug_image(
                 2,
             )
 
-        screenshot_path = os.path.join(debug_dir, f"debug_screenshot_{timestamp}.png")
+        screenshot_path = os.path.join(debug_dir, f"{name}_screenshot_{timestamp}.png")
         cv2.imwrite(screenshot_path, debug_screenshot)
 
         # Save the template
-        template_path_debug = os.path.join(debug_dir, f"debug_template_{timestamp}.png")
+        template_path_debug = os.path.join(debug_dir, f"{name}_template_{timestamp}.png")
         cv2.imwrite(template_path_debug, template)
 
         print(f"[DEBUG] Saved debug images: {screenshot_path}, {template_path_debug}")
@@ -61,14 +62,14 @@ def save_debug_image(
 
 
 def locate_center_on_screen(
-    template_path, confidence=0.8, min_search_time=0.2, region=None
+    template_path, confidence=0.8, min_search_time=0.2, region=None, name=None, debug=False
 ):
     """
     Locate template image on screen, works with both desktop and phone screenshots
     """
     if USE_PHONE:
         return locate_center_on_phone(
-            template_path, confidence, min_search_time, region
+            template_path, confidence, min_search_time, region, name, debug
         )
     else:
         return locate_center_on_desktop(
@@ -77,7 +78,7 @@ def locate_center_on_screen(
 
 
 def locate_center_on_phone(
-    template_path, confidence=0.8, min_search_time=1, region=None
+    template_path, confidence=0.8, min_search_time=1, region=None, name=None, debug=False
 ):
     """Locate template image on phone screenshot using improved OpenCV + imutils"""
     try:
@@ -154,6 +155,8 @@ def locate_center_on_phone(
                     best_match = maxLoc
                     best_r = r
 
+            if debug:
+                print(f"[PHONE] Best confidence for {template_path}: {best_confidence:.3f}")
             # If we found a match above our confidence threshold
             if best_confidence >= confidence:
                 # Calculate the center point
@@ -179,7 +182,8 @@ def locate_center_on_phone(
                 # )
 
                 # Save debug images for manual verification
-                if config.get("saveDebugImages", False):
+                if config.get("saveDebugImages", False) or debug:
+                    print(f"[DEBUG] Saving debug images for {name}")
                     match_location = (startX, startY, endX - startX, endY - startY)
                     save_debug_image(
                         screenshot_cv,
@@ -187,6 +191,7 @@ def locate_center_on_phone(
                         match_location,
                         best_confidence,
                         template_path,
+                        name
                     )
 
                 return pyautogui.Point(center_x, center_y)

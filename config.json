@@ -6,18 +6,16 @@
   ],
   "minimum_mood": "GOOD",
   "maximum_failure": 15,
-  "prioritize_g1_race": false,
-  "skill_point_cap": 280,
+  "skill_point_cap": 1000,
   "enable_skill_point_check": true,
   "min_support": 2,
   "stat_caps": {
-    "spd": 1100,
+    "spd": 1140,
     "sta": 1100,
-    "pwr": 900,
+    "pwr": 1100,
     "guts": 300,
     "wit": 900
   },
-  "usePhone": true,
   "saveDebugImages": false,
-  "check_goals": false
+  "scenario": 2
 }

@@ -8,30 +8,10 @@ from core.execute import career_lobby
 with open("config.json", "r", encoding="utf-8") as file:
   config = json.load(file)
 
-USE_PHONE = config.get("usePhone", False)
+USE_PHONE = config.get("usePhone", True)
 
 def focus_umamusume():
   try:
-    # Check if usePhone is enabled
-    # if USE_PHONE:
-    #   # Look for Mumu window when phone mode is enabled
-    #   mumu_windows = gw.getWindowsWithTitle("Mumu")
-    #   if mumu_windows:
-    #     win = mumu_windows[0]
-    #     print("[INFO] Found Mumu window, focusing...")
-    #   else:
-    #     # Try alternative Mumu window titles
-    #     alternative_titles = ["MuMu", "MUMU", "MumuPlayer", "MUMUPlayer"]
-    #     for title in alternative_titles:
-    #       windows = gw.getWindowsWithTitle(title)
-    #       if windows:
-    #         win = windows[0]
-    #         print(f"[INFO] Found Mumu window with title '{title}', focusing...")
-    #         break
-    #     else:
-    #       print("[INFO] Mumu window not found. Continuing without window focus.")
-    #       return
-    
     if not USE_PHONE:
       # Look for Umamusume window when not in phone mode
       windows = gw.getWindowsWithTitle("Umamusume")

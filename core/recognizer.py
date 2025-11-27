@@ -6,9 +6,47 @@ from PIL import ImageGrab, ImageStat
 
 from utils.screenshot import capture_region
 from utils.adb_utils import get_adb_controller
+import os
+from datetime import datetime
+from PIL import Image
+import time
+
+def save_debug_image(image, prefix: str = "debug") -> str:
+    """
+    Save a debug image with timestamp to debug_images directory.
+
+    Args:
+        image: PIL Image or numpy array to save
+        prefix: Prefix for the filename
+
+    Returns:
+        str: Path to the saved debug image
+    """
+    # Create debug_images directory if it doesn't exist
+    debug_dir = "debug_images"
+    if not os.path.exists(debug_dir):
+        os.makedirs(debug_dir)
+
+    # Generate timestamp
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    filename = f"{prefix}_{timestamp}.png"
+    filepath = os.path.join(debug_dir, filename)
+
+    # Convert numpy array to PIL Image if needed
+    if isinstance(image, np.ndarray):
+        # Convert BGR to RGB if it's a color image
+        if len(image.shape) == 3 and image.shape[2] == 3:
+            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        image = Image.fromarray(image)
+
+    # Save the image
+    image.save(filepath)
+    print(f"[DEBUG] Saved debug image: {filepath}")
+
+    return filepath
 
 
-def match_template(template_path, region=None, threshold=0.85, debug=False):
+def match_template(template_path, secondary_templates={}, region=None, threshold=0.85, debug=False, name=None):
     # Check if usePhone is enabled
     try:
         with open("config.json", "r", encoding="utf-8") as file:
@@ -16,7 +54,7 @@ def match_template(template_path, region=None, threshold=0.85, debug=False):
     except FileNotFoundError:
         config = {"usePhone": False}
 
-    USE_PHONE = config.get("usePhone", False)
+    USE_PHONE = config.get("usePhone", True)
 
     # if USE_PHONE:
     #     # Use ADB screenshot for phone mode
@@ -100,23 +138,56 @@ def match_template(template_path, region=None, threshold=0.85, debug=False):
 
     screen = cv2.cvtColor(screen, cv2.COLOR_RGB2BGR)
 
-    # Load template
+    # Match primary template
     template = cv2.imread(template_path, cv2.IMREAD_COLOR)  # safe default
     if template.shape[2] == 4:
         template = cv2.cvtColor(template, cv2.COLOR_BGRA2BGR)
     result = cv2.matchTemplate(screen, template, cv2.TM_CCOEFF_NORMED)
-    # Use cv2.minMaxLoc to get max confidence safely from the result matrix
-    if debug:
-        min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
-        print(f"[DEBUG] Max confidence: {max_val:.4f}")
-        print(f"[DEBUG] Min confidence: {min_val:.4f}")
-        
+
     loc = np.where(result >= threshold)
 
     h, w = template.shape[:2]
-    boxes = [(x, y, w, h) for (x, y) in zip(*loc[::-1])]
+    primary_boxes = deduplicate_boxes([(x, y, w, h) for (x, y) in zip(*loc[::-1])])
 
-    return deduplicate_boxes(boxes)
+    # Use cv2.minMaxLoc to get max confidence safely from the result matrix
+    if debug:
+        min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
+        print(f"[DEBUG] Max confidence for {name}: {max_val:.4f}")
+        print(f"[DEBUG] Min confidence for {name}: {min_val:.4f}")
+        vis = screen.copy()
+        for (x, y) in zip(*loc[::-1]):
+            cv2.rectangle(vis, (x, y), (x + w, y + h), (0, 255, 0), 2)
+        save_debug_image(
+            Image.fromarray(cv2.cvtColor(vis, cv2.COLOR_BGR2RGB)),
+            f"{name}_template_search",
+        )
+
+    # Match secondary templates
+    secondary_dicts = {}
+    for secondary_name, secondary_path in secondary_templates.items():
+        time.sleep(0.5) 
+        secondary_template = cv2.imread(secondary_path, cv2.IMREAD_COLOR)
+        if secondary_template.shape[2] == 4:
+            secondary_template = cv2.cvtColor(secondary_template, cv2.COLOR_BGRA2BGR)
+        result = cv2.matchTemplate(screen, secondary_template, cv2.TM_CCOEFF_NORMED)
+
+        if debug:
+            min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
+            print(f"[DEBUG] Max confidence for {secondary_name}: {max_val:.4f}")
+            print(f"[DEBUG] Min confidence for {secondary_name}: {min_val:.4f}")
+        
+        if secondary_name == "spirit":
+            loc = np.where(result >= 0.73)
+        else:
+            loc = np.where(result >= 0.65)
+
+        h, w = secondary_template.shape[:2]
+        secondary_dicts[secondary_name] = deduplicate_boxes([(x, y, w, h) for (x, y) in zip(*loc[::-1])])
+
+    return {
+        "primary": primary_boxes,
+        "secondary": secondary_dicts,
+    }
 
 
 def deduplicate_boxes(boxes, min_dist=5):

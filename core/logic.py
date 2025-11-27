@@ -2,6 +2,7 @@ import json
 import time
 
 from core.state import check_current_year, stat_state
+from utils.image_recognition import locate_center_on_screen
 
 with open("config.json", "r", encoding="utf-8") as file:
     config = json.load(file)
@@ -10,7 +11,8 @@ PRIORITY_STAT = config["priority_stat"]
 MAX_FAILURE = config["maximum_failure"]
 STAT_CAPS = config["stat_caps"]
 MIN_SUPPORT = config.get("min_support", 2)
-
+SCENARIO = config.get("scenario", 1)
+USE_PHONE = config.get("usePhone", True)
 
 # Get priority stat from config
 def get_stat_priority(stat_key: str) -> int:
@@ -22,7 +24,7 @@ def has_sufficient_support(results):
     for stat, data in results.items():
         if int(data["failure"]) <= MAX_FAILURE and data["total_support"] >= MIN_SUPPORT:
             # Special handling for WIT - requires at least 2 support cards
-            if stat == "wit" and data["total_support"] >= 2:
+            if stat == "wit" and data["total_support"] >= 3:
                 return True
             elif stat != "wit":
                 return True
@@ -65,7 +67,9 @@ def most_support_card(results):
         return "wit"
 
     filtered_results = {
-        k: v for k, v in results.items() if int(v["failure"]) <= MAX_FAILURE and k != "wit"
+        k: v
+        for k, v in results.items()
+        if int(v["failure"]) <= MAX_FAILURE and k != "wit"
     }
 
     if not filtered_results:
@@ -121,29 +125,80 @@ def rainbow_training(results):
         print("\n[INFO] No rainbow training found under failure threshold.")
         return None
 
-    # Find support card rainbow in training
-    best_rainbow = max(
-        rainbow_candidates.items(),
-        key=lambda x: (x[1]["support"].get(x[0], 0), - get_stat_priority(x[0])),
-    )
-
-    # If only 1 support/rainbow card and failure rate more than 5%, prefer choosing to rest
-    if best_rainbow[1].get("total_support", 0) <= 1 and int(best_rainbow[1].get("failure", 0)) > 5:
-        best_key, best_data = "rest", best_rainbow[1]
-    else:
-        best_key, best_data = best_rainbow
-
-    # If key is wit, and spd failure rate more than 5%, prefer choosing to rest, because wit training has lower failure rate
-    if best_key == "wit":
-        if spd_failure_rate > 5:
-            best_key = "rest"
-
-    if best_key == "rest":
-        print("[INFO] Choosing to rest because only 1 support/rainbow card and failure rate more than 5%")
-    else:
-        print(
-            f"\n[INFO] Rainbow training selected: {best_key.upper()} with {best_data['support'][best_key]} rainbow supports and {best_data['failure']}% fail chance"
+    if SCENARIO == 2:
+        # AOHARU SCENARIO
+        # Find best rainbow training
+        # Priority: support count for that stat > spirit-bomb > spirit > stat priority
+        best_rainbow = max(
+            rainbow_candidates.items(),
+            key=lambda x: (
+                x[1]["support"].get(x[0], 0),  # Primary: support count for that stat
+                x[1].get("spirit-bomb", 0),  # Secondary: spirit-bomb (higher is better)
+                x[1].get("spirit", 0),  # Tertiary: spirit (higher is better)
+                -get_stat_priority(
+                    x[0]
+                ),  # Quaternary: stat priority (lower number is better)
+            ),
         )
+
+        # If only 1 support/rainbow card and failure rate more than 5%, prefer choosing to rest
+        if (
+            best_rainbow[1].get("total_support", 0) <= 1
+            and int(best_rainbow[1].get("failure", 0)) > 5
+        ):
+            best_key, best_data = "rest", best_rainbow[1]
+        else:
+            best_key, best_data = best_rainbow
+
+        # If key is wit, and spd failure rate more than 5%, prefer choosing to rest, because wit training has lower failure rate
+        if best_key == "wit":
+            if spd_failure_rate > 5:
+                best_key = "rest"
+
+        if best_key == "rest":
+            print(
+                "[INFO] Choosing to rest because only 1 support/rainbow card and failure rate more than 5%"
+            )
+        else:
+            spirit_info = ""
+            if best_data.get("spirit-bomb", 0) > 0:
+                spirit_info = f", {best_data['spirit-bomb']} spirit-bomb"
+            elif best_data.get("spirit", 0) > 0:
+                spirit_info = f", {best_data['spirit']} spirit"
+            print(
+                f"\n[INFO] Rainbow training selected: {best_key.upper()} with {best_data['support'][best_key]} rainbow supports{spirit_info} and {best_data['failure']}% fail chance"
+            )
+    else:
+        # URA SCENARIO
+        # Find best rainbow training
+        best_rainbow = max(
+            rainbow_candidates.items(),
+            key=lambda x: (x[1]["support"].get(x[0], 0), -get_stat_priority(x[0])),
+        )
+
+        # If only 1 support/rainbow card and failure rate more than 5%, prefer choosing to rest
+        if (
+            best_rainbow[1].get("total_support", 0) <= 1
+            and int(best_rainbow[1].get("failure", 0)) > 5
+        ):
+            best_key, best_data = "rest", best_rainbow[1]
+        else:
+            best_key, best_data = best_rainbow
+
+        # If key is wit, and spd failure rate more than 5%, prefer choosing to rest, because wit training has lower failure rate
+        if best_key == "wit":
+            if spd_failure_rate > 5:
+                best_key = "rest"
+
+        if best_key == "rest":
+            print(
+                "[INFO] Choosing to rest because only 1 support/rainbow card and failure rate more than 5%"
+            )
+        else:
+            print(
+                f"\n[INFO] Rainbow training selected: {best_key.upper()} with {best_data['support'][best_key]} rainbow supports and {best_data['failure']}% fail chance"
+            )
+
     return best_key
 
 
@@ -189,18 +244,75 @@ def do_something(results):
     else:
         result = rainbow_training(filtered)
         if result is None:
-            print(
-                "[INFO] Falling back to most_support_card because rainbow not available."
-            )
-
-            # Check if any training has sufficient support cards
-            if not has_sufficient_support(filtered):
+            # Check if stamina training option are unsafe before attempting race
+            if check_training_unsafe(filtered, type="stamina"):
                 print(
-                    f"\n[INFO] No training has >= {MIN_SUPPORT} support cards and energy is high. Prioritizing race instead."
+                    f"[INFO] Stamina training option has failure rate > {MAX_FAILURE}%. Skipping race and choosing to rest."
                 )
-                return "PRIORITIZE_RACE"
+                return "rest"
 
-            return most_support_card(filtered)
+            if SCENARIO == 1:
+                print(
+                    "[INFO] Falling back to most_support_card because rainbow not available."
+                )
+
+                # Check if any training has sufficient support cards
+                if not has_sufficient_support(filtered):
+                    print(
+                        f"\n[INFO] No training has >= {MIN_SUPPORT} support cards and energy is high. Prioritizing race instead."
+                    )
+                    return "PRIORITIZE_RACE"
+
+                return most_support_card(filtered)
+            else:
+                # Aoharu scenario, but no valid rainbow training.
+                # Prefer trainings that give spirit-bomb / spirit
+                # Or date if spd failure rate is more than 0
+                if filtered.get("spd", {}).get("failure", 0) > 0:
+                    date_icon = locate_center_on_screen(
+                        "assets/icons/support_card_type_friend_2.png",
+                        confidence=0.65,
+                        min_search_time=0.2,
+                        name="date_aoharu",
+                        debug=True,
+                    )
+                    if date_icon:
+                        print("[INFO] Date found, choosing to date")
+                        return "date"
+
+                # Spirit-related training
+                spirit_candidates = {
+                    stat: data
+                    for stat, data in filtered.items()
+                    if int(data.get("failure", 0)) <= MAX_FAILURE
+                    and (data.get("spirit-bomb", 0) > 0 or data.get("spirit", 0) > 0)
+                }
+
+                if spirit_candidates:
+                    best_spirit_training = max(
+                        spirit_candidates.items(),
+                        key=lambda x: (
+                            x[1].get("spirit-bomb", 0),
+                            x[1].get("spirit", 0),
+                            -get_stat_priority(x[0]),
+                        ),
+                    )
+                    best_key, best_data = best_spirit_training
+                    print(
+                        f"[INFO] Aoharu No Rainbow: choosing {best_key.upper()} "
+                        f"with spirit bomb={best_data.get('spirit-bomb', 0)}, "
+                        f"spirit={best_data.get('spirit', 0)}, "
+                        f"failure={best_data.get('failure', 0)}%"
+                    )
+                    return best_key
+                else:
+                    # If no spirit-related training is available, fall back to resting
+                    print(
+                        "[INFO] Aoharu No Rainbow: no spirit or spirit bomb found under "
+                        "failure threshold, choosing to rest"
+                    )
+                    return "rest"
+
     return result
 
 
