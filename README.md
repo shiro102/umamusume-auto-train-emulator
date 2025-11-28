@@ -42,15 +42,13 @@ Get new updates using "git pull" in Command Prompt or PowerShell at the tool's f
 
 #### Setup
 
-##### Clone repository
+#### How to use
+
+- Download git and gitbash. You can use Google or watch this video: https://www.youtube.com/watch?v=iYkLrXobBbA and type in git bash:
 
 ```
 git clone https://github.com/shiro102/umamusume-auto-train-emulator.git
 ```
-
-#### How to use
-
-- Download git and gitbash. You can use Google or watch this video: https://www.youtube.com/watch?v=iYkLrXobBbA
 - Install the latest Python version: https://www.python.org/downloads/ and add it to the PATH in your PC environment variable (https://www.youtube.com/watch?v=Ac3w0PjspWw&ab_channel=CyprienRusu)
 - Open Windows PowerShell or Command Terminal
 - Go to the folder of the code using cd /d (image) <img width="866" height="249" alt="image" src="https://github.com/user-attachments/assets/2f793ba7-90b0-4353-ad12-cc00a2f924d8" />
@@ -208,9 +206,11 @@ Dự án này được lấy cảm hứng từ [shiokaze/UmamusumeAutoTrainer](h
 - [Python 3.10+](https://www.python.org/downloads/)
 
 #### Cài đặt
-
 ##### Hướng dẫn sử dụng
-- Tải git và git bash. Bạn có thể Google hoặc coi clip này https://www.youtube.com/watch?v=2DLixSsN_z8
+- Tải git và git bash. Bạn có thể Google hoặc coi clip này https://www.youtube.com/watch?v=2DLixSsN_z8 và bỏ vào git bash:
+```
+git clone https://github.com/shiro102/umamusume-auto-train-emulator.git
+```
 - Cài đặt Python mới nhất: https://www.python.org/downloads/, thêm Python vào PATH của máy (https://www.youtube.com/watch?v=Ac3w0PjspWw&ab_channel=CyprienRusu)
 - Mở PowerShell hoặc Command Terminal
 - Di chuyển đến thư mục mã nguồn bằng lệnh `cd /d` (xem hình minh họa)
