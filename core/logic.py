@@ -69,7 +69,8 @@ def most_support_card(results):
     filtered_results = {
         k: v
         for k, v in results.items()
-        if int(v["failure"]) <= MAX_FAILURE and k != "wit"
+        if int(v["failure"]) <= MAX_FAILURE
+        and (k != "wit" or v["total_support"] >= 2)  # allow WIT when it has support
     }
 
     if not filtered_results:
@@ -81,7 +82,9 @@ def most_support_card(results):
         filtered_results.items(),
         key=lambda x: (
             x[1]["total_support"],
-            -get_stat_priority(x[0]),  # priority decides when supports are equal
+            x[1].get("spirit-bomb", 0),  # tie-breaker: spirit bomb count
+            x[1].get("spirit", 0),  # tie-breaker: spirit count
+            -get_stat_priority(x[0]),  # fall back to configured stat priority
         ),
     )
 

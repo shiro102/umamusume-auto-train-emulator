@@ -732,6 +732,9 @@ def career_lobby():
 
     # Program start
     while True:
+        # Click outside to close any popup window
+        adb_click(360, 250)
+
         year = check_current_year()
         event_name = check_event_name()
 
@@ -818,9 +821,9 @@ def career_lobby():
             # Click run button for team showdown
             aoharu_run_btn = locate_center_on_screen(
                 "assets/buttons/aoharu_run_btn.png",
-                confidence=0.8,
+                confidence=0.75,
                 name="aoharu_run_btn",
-                debug=False,
+                debug=True,
             )
 
             if aoharu_run_btn:
@@ -871,17 +874,18 @@ def career_lobby():
                     minSearch=0.2,
                     confidence=0.8 if not USE_PHONE else 0.65,
                 )
-                # Click skip button
-                time.sleep(1.5)
-                print("[INFO] Clicking skip button")
-                click(img="assets/buttons/skip_btn.png", minSearch=2, confidence=0.65)
-                
+
                 # Click next button
                 time.sleep(1.5)
                 print("[INFO] Clicking next button")
                 click(img="assets/buttons/next_btn.png", minSearch=2)
                 time.sleep(1.5)
 
+                # Click skip button
+                time.sleep(1.5)
+                print("[INFO] Clicking skip button")
+                click(img="assets/buttons/skip_btn.png", minSearch=2, confidence=0.65)
+                
                 # Click next button
                 print("[INFO] Clicking next button for Aoharu scenario")
                 click(
@@ -889,6 +893,11 @@ def career_lobby():
                     minSearch=2,
                     confidence=0.6,
                 )
+
+                # Click skip button
+                time.sleep(1.5)
+                print("[INFO] Clicking skip button")
+                click(img="assets/buttons/skip_btn.png", minSearch=2, confidence=0.65)
 
         ### Check if current menu is in career lobby
         tazuna_hint = locate_center_on_screen(
@@ -959,7 +968,7 @@ def career_lobby():
         # Mood check, not checking in the first turn of Pre-Debut or if scenario is not Aoharu
         if (
             mood_index < minimum_mood
-            and (year == "Junior Year Pre-Debut" and not FIRST_TURN_DONE)
+            and (year == "Junior Year Pre-Debut" and FIRST_TURN_DONE)
         ):
             print("[INFO] Mood is low, trying recreation to increase mood")
             do_recreation()
