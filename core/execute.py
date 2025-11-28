@@ -842,19 +842,18 @@ def career_lobby():
                     print("[INFO] Aoharu Scenario: Final showdown detected")
                     adb_move_to(final_showdown.x, final_showdown.y, duration=0.175)
                     adb_click(final_showdown.x, final_showdown.y)
-                    continue
+                else:
+                    # Choose middle team
+                    time.sleep(1.5)
+                    print("[INFO] Choosing middle team")
+                    adb_move_to(360, 640, duration=0.2)
+                    adb_click(360, 640)
 
-                # Choose middle team
-                time.sleep(1.5)
-                print("[INFO] Choosing middle team")
-                adb_move_to(360, 640, duration=0.2)
-                adb_click(360, 640)
-
-                # Click select opponent button
-                time.sleep(1.5)
-                print("[INFO] Clicking select opponent button")
-                adb_move_to(360, 640, duration=0.2)
-                adb_click(360, 1100)
+                    # Click select opponent button
+                    time.sleep(1.5)
+                    print("[INFO] Clicking select opponent button")
+                    adb_move_to(360, 640, duration=0.2)
+                    adb_click(360, 1100)
 
                 # Begin Showdown button
                 time.sleep(2)

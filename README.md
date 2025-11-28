@@ -1,12 +1,12 @@
 # Umamusume Auto Train Phone Emulator
 
-This is a fork from [samsulpanjul/umamusume-auto-train](https://github.com/samsulpanjul/umamusume-auto-train)
 
 If you ever get tired during or after a bad run and don't want to keep training, or if you just want to farm sparks lazily, this is the solution for you. This is a simple auto-training for Umamusume.
 
+This is a fork from [samsulpanjul/umamusume-auto-train](https://github.com/samsulpanjul/umamusume-auto-train)
 This project is inspired by [shiokaze/UmamusumeAutoTrainer](https://github.com/shiokaze/UmamusumeAutoTrainer)
 
-[Demo video](https://youtu.be/CXSYVD-iMJk)
+[Demo & Instruction Video](https://drive.google.com/file/d/1qjyTca4c5g_eBdVxdtf-VShDrqWTWruR/view?usp=sharing)
 
 DISCLAIMER: There are bugs sometimes because app uses OCR screen reading for options, so please DO NOT use this tool to train your ace. However thanks to that there is ALMOST ZERO chance of getting banned by Cygames. I have used it since the launch of the game. But still don't reveal your ID with the app (in the same image, ... ).
 
