@@ -271,7 +271,7 @@ def do_something(results):
                 if filtered.get("spd", {}).get("failure", 0) > 0:
                     date_icon = locate_center_on_screen(
                         "assets/icons/support_card_type_friend_2.png",
-                        confidence=0.65,
+                        confidence=0.75,
                         min_search_time=0.2,
                         name="date_aoharu",
                         debug=False,

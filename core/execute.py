@@ -871,7 +871,11 @@ def career_lobby():
                     minSearch=0.2,
                     confidence=0.8 if not USE_PHONE else 0.65,
                 )
-
+                # Click skip button
+                time.sleep(1.5)
+                print("[INFO] Clicking skip button")
+                click(img="assets/buttons/skip_btn.png", minSearch=2, confidence=0.65)
+                
                 # Click next button
                 time.sleep(1.5)
                 print("[INFO] Clicking next button")
