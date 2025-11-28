@@ -45,7 +45,7 @@ Get new updates using "git pull" in Command Prompt or PowerShell at the tool's f
 ##### Clone repository
 
 ```
-git clone https://github.com/samsulpanjul/umamusume-auto-train.git
+git clone https://github.com/shiro102/umamusume-auto-train-emulator.git
 ```
 
 #### How to use
@@ -211,7 +211,7 @@ Dự án này được lấy cảm hứng từ [shiokaze/UmamusumeAutoTrainer](h
 
 ##### Tải mã nguồn
 ```
-git clone https://github.com/samsulpanjul/umamusume-auto-train.git
+git clone https://github.com/shiro102/umamusume-auto-train-emulator.git
 ```
 
 ##### Hướng dẫn sử dụng

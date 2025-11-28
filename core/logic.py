@@ -59,7 +59,7 @@ def most_support_card(results):
         all_others_bad
         and wit_data
         and int(wit_data["failure"]) <= MAX_FAILURE
-        and wit_data["total_support"] >= 3
+        and wit_data["total_support"] >= 2
     ):
         print(
             "\n[INFO] All trainings are unsafe, but WIT is safe and has enough support cards."
