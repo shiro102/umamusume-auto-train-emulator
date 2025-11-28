@@ -727,7 +727,7 @@ def career_lobby():
     # Warning for Aoharu scenario
     if SCENARIO == 2:
         print("\n=======================================================================================\n")
-        print(f"[INFO] IMPORTANT: please customize event 'Team at Last' in events.json for the skill you want to get at the end")
+        print(f"[INFO] IMPORTANT: please customize event 'Team at Last' in events.json for the skill you want to get at the end for Aoharu scenario")
         print("\n=======================================================================================\n")
 
     # Program start
@@ -970,6 +970,7 @@ def career_lobby():
             and turn < 7
             and ("fan" in criteria.lower() or criteria != "")
             and "junior" not in criteria.lower()
+            and "met" not in criteria.lower()
         ):
             from pymsgbox import confirm
             print(
