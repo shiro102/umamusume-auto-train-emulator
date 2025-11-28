@@ -823,7 +823,7 @@ def career_lobby():
                 "assets/buttons/aoharu_run_btn.png",
                 confidence=0.75,
                 name="aoharu_run_btn",
-                debug=True,
+                debug=False,
             )
 
             if aoharu_run_btn:
