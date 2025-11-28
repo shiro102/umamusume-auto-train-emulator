@@ -821,7 +821,7 @@ def career_lobby():
             # Click run button for team showdown
             aoharu_run_btn = locate_center_on_screen(
                 "assets/buttons/aoharu_run_btn.png",
-                confidence=0.75,
+                confidence=0.8,
                 name="aoharu_run_btn",
                 debug=False,
             )
