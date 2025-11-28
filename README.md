@@ -50,7 +50,7 @@ git clone https://github.com/shiro102/umamusume-auto-train-emulator.git
 
 #### How to use
 
-- Clone the code from git: https://www.youtube.com/watch?v=ZFFtMyOFPe8
+- Download git and gitbash. You can use Google or watch this video: https://www.youtube.com/watch?v=iYkLrXobBbA
 - Install the latest Python version: https://www.python.org/downloads/ and add it to the PATH in your PC environment variable (https://www.youtube.com/watch?v=Ac3w0PjspWw&ab_channel=CyprienRusu)
 - Open Windows PowerShell or Command Terminal
 - Go to the folder of the code using cd /d (image) <img width="866" height="249" alt="image" src="https://github.com/user-attachments/assets/2f793ba7-90b0-4353-ad12-cc00a2f924d8" />
@@ -209,13 +209,8 @@ Dự án này được lấy cảm hứng từ [shiokaze/UmamusumeAutoTrainer](h
 
 #### Cài đặt
 
-##### Tải mã nguồn
-```
-git clone https://github.com/shiro102/umamusume-auto-train-emulator.git
-```
-
 ##### Hướng dẫn sử dụng
-- Tải mã nguồn từ git: https://www.youtube.com/watch?v=ZFFtMyOFPe8
+- Tải git và git bash. Bạn có thể Google hoặc coi clip này https://www.youtube.com/watch?v=2DLixSsN_z8
 - Cài đặt Python mới nhất: https://www.python.org/downloads/, thêm Python vào PATH của máy (https://www.youtube.com/watch?v=Ac3w0PjspWw&ab_channel=CyprienRusu)
 - Mở PowerShell hoặc Command Terminal
 - Di chuyển đến thư mục mã nguồn bằng lệnh `cd /d` (xem hình minh họa)
