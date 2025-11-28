@@ -732,8 +732,7 @@ def career_lobby():
 
     # Program start
     while True:
-        # Click outside to close any popup window
-        adb_click(360, 250)
+
 
         year = check_current_year()
         event_name = check_event_name()
@@ -821,7 +820,7 @@ def career_lobby():
             # Click run button for team showdown
             aoharu_run_btn = locate_center_on_screen(
                 "assets/buttons/aoharu_run_btn.png",
-                confidence=0.8,
+                confidence=0.75,
                 name="aoharu_run_btn",
                 debug=False,
             )
@@ -876,9 +875,10 @@ def career_lobby():
 
                 # Click next button
                 time.sleep(1.5)
+                adb_click(360, 250)
+
                 print("[INFO] Clicking next button")
                 click(img="assets/buttons/next_btn.png", minSearch=2)
-                time.sleep(1.5)
 
                 # Click skip button
                 time.sleep(1.5)
@@ -886,6 +886,9 @@ def career_lobby():
                 click(img="assets/buttons/skip_btn.png", minSearch=2, confidence=0.65)
                 
                 # Click next button
+                time.sleep(1.5)
+                adb_click(360, 250)
+
                 print("[INFO] Clicking next button for Aoharu scenario")
                 click(
                     img="assets/buttons/next_btn_aoharu.png",
