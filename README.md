@@ -7,13 +7,14 @@ This is a fork from [samsulpanjul/umamusume-auto-train](https://github.com/samsu
 
 This project is inspired by [shiokaze/UmamusumeAutoTrainer](https://github.com/shiokaze/UmamusumeAutoTrainer)
 
-[Demo & Instruction Video](https://drive.google.com/file/d/1qjyTca4c5g_eBdVxdtf-VShDrqWTWruR/view?usp=sharing)
-
-[Video hướng dẫn và Demo](https://drive.google.com/file/d/1qjyTca4c5g_eBdVxdtf-VShDrqWTWruR/view?usp=sharing)
-
 DISCLAIMER: There are bugs sometimes because app uses OCR screen reading for options, so please DO NOT use this tool to train your ace. However thanks to that there is ALMOST ZERO chance of getting banned by Cygames. I have used it since the launch of the game. But still don't reveal your ID with the app (in the same image, ... ).
 
 THÔNG BÁO: App này sẽ đôi khi có lỗi vì nó chụp màn hình để chọn option, nên ĐỪNG DÙNG nó để train ngựa ace. Nhưng nhờ thế nên là sẽ GẦN NHƯ KHÔNG CÓ KHẢ NĂNG BỊ BAN bởi Cygames. Mình đã dùng nó từ khi game mở tới giờ. Nhưng mà bạn cũng ko nên lộ ID lúc dùng app như là chụp ảnh đăng lên group, ...
+
+## Video Guide
+[Demo & Instruction Video](https://drive.google.com/file/d/1qjyTca4c5g_eBdVxdtf-VShDrqWTWruR/view?usp=sharing)
+
+[Video hướng dẫn và Demo](https://drive.google.com/file/d/1qjyTca4c5g_eBdVxdtf-VShDrqWTWruR/view?usp=sharing)
 
 # Language
 1. [English](#english)
