@@ -7,6 +7,7 @@ This is a fork from [samsulpanjul/umamusume-auto-train](https://github.com/samsu
 This project is inspired by [shiokaze/UmamusumeAutoTrainer](https://github.com/shiokaze/UmamusumeAutoTrainer)
 
 [Demo & Instruction Video](https://drive.google.com/file/d/1qjyTca4c5g_eBdVxdtf-VShDrqWTWruR/view?usp=sharing)
+
 [Video hướng dẫn và Demo](https://drive.google.com/file/d/1qjyTca4c5g_eBdVxdtf-VShDrqWTWruR/view?usp=sharing)
 
 DISCLAIMER: There are bugs sometimes because app uses OCR screen reading for options, so please DO NOT use this tool to train your ace. However thanks to that there is ALMOST ZERO chance of getting banned by Cygames. I have used it since the launch of the game. But still don't reveal your ID with the app (in the same image, ... ).
