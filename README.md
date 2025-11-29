@@ -174,7 +174,7 @@ The bot uses an improved training logic system:
 5. **Rest Logic**: If energy is too low (every training have high failure rate) => Rest
 
 #### Known Issues
-
+- If got stuck when train, please press a random key. If it does not work then please reset the session.
 - Some Uma that has special event/target goals (like Restricted Train Goldship or 2 G1 Race Oguri Cap) may not working. So please avoid using Goldship for training right now to keep your 12 million yen safe. For Oguri Cap, you can turn on Prioritize G1 race
 - OCR might misread failure chance (e.g., reads 33% as 3%) and proceeds with training anyway.
 - Sometimes it misdetects debuffs and clicks the infirmary unnecessarily (not a big deal).
@@ -316,6 +316,7 @@ Bot sử dụng hệ thống logic huấn luyện cải tiến:
 6. **Logic nghỉ ngơi**: Nếu năng lượng thấp (tất cả các bài tập đều có tỷ lệ thất bại cao) => Nghỉ ngơi
 
 ### Vấn đề đã biết
+- Nếu train ko chịu chạy thì hãy ấn một phím bất kì. Nếu ko đc nữa thì reset train
 - Một số Uma có mục tiêu/sự kiện đặc biệt (như Goldship hoặc Oguri Cap) có thể không hoạt động đúng. Vui lòng tránh dùng Goldship để đảm bảo an toàn.
 - OCR có thể đọc sai tỷ lệ thất bại (ví dụ: đọc 33% thành 3%) và vẫn tiếp tục huấn luyện.
 - Đôi khi nhận diện debuff sai và nhấn vào infirmary không cần thiết (không ảnh hưởng nhiều).

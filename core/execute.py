@@ -723,6 +723,18 @@ def after_race():
 def career_lobby():
     global FIRST_TURN_DONE
     global NEW_YEAR_EVENT_DONE
+    FAILURE_COUNT = 0
+    
+    if FAILURE_COUNT > 15:
+        from pymsgbox import confirm
+        print(
+            f"[WARNING] A large number of failures detected, requiring manual handle."
+        )
+        result = confirm(
+            text=f"A large number of failures detected, requiring manual handle. Please check the game, do that manually and then press OK to continue.",
+            title="Large number of failures detected",
+            buttons=["OK"],
+        )
 
     # Warning for Aoharu scenario
     if SCENARIO == 2:
@@ -732,7 +744,6 @@ def career_lobby():
 
     # Program start
     while True:
-
 
         year = check_current_year()
         event_name = check_event_name()
@@ -780,6 +791,8 @@ def career_lobby():
             text="[INFO] Inspiration found.",
             confidence=0.65,
         ):
+            # Reset failure count
+            FAILURE_COUNT = 0
             continue
 
         ### Third check, next button
@@ -790,15 +803,9 @@ def career_lobby():
         ):
             adb_click(360, 250)
             print("[INFO] Normal next button found, clicking...")
+            FAILURE_COUNT += 1
             continue
         
-        locate_center_on_screen(
-            "assets/buttons/next_btn_aoharu.png",
-            confidence=0.8 if not USE_PHONE else 0.65,
-            min_search_time=0.2,
-            name="next_btn_aoharu",
-            debug=False,
-        )
         if click(
             img="assets/buttons/next_btn_aoharu.png",
             minSearch=0.2,
@@ -806,6 +813,7 @@ def career_lobby():
         ):
             adb_click(360, 250)
             print("[INFO] Aoharu next button found, clicking...")
+            FAILURE_COUNT += 1
             continue
 
         ### Fourth check, cancel button
@@ -824,7 +832,7 @@ def career_lobby():
                 "assets/buttons/aoharu_run_btn.png",
                 confidence=0.75,
                 name="aoharu_run_btn",
-                debug=False,
+                debug=True,
             )
 
             if aoharu_run_btn:
@@ -899,6 +907,9 @@ def career_lobby():
                 print("[INFO] Clicking skip button")
                 click(img="assets/buttons/skip_btn.png", minSearch=2, confidence=0.65)
 
+                # Reset failure count
+                FAILURE_COUNT = 0
+
         ### Check if current menu is in career lobby
         tazuna_hint = locate_center_on_screen(
             "assets/ui/tazuna_hint.png",
@@ -957,12 +968,18 @@ def career_lobby():
             race_prep()
             time.sleep(1)
             after_race()
+
+            # Reset failure count
+            FAILURE_COUNT = 0
             continue
 
         # If calendar is race day, do race
         if (turn == "Race Day" or turn == "Goal") and year != "Finale Season":
             print("[INFO] Race Day.")
             race_day()
+
+            # Reset failure count
+            FAILURE_COUNT = 0
             continue
 
         # Mood check, not checking in the first turn of Pre-Debut or if scenario is not Aoharu
@@ -972,6 +989,8 @@ def career_lobby():
         ):
             print("[INFO] Mood is low, trying recreation to increase mood")
             do_recreation()
+            # Reset failure count
+            FAILURE_COUNT = 0
             continue
 
         if not FIRST_TURN_DONE:
@@ -1019,6 +1038,8 @@ def career_lobby():
             print("[INFO] Prioritizing G1 race.")
             g1_race_found = do_race(PRIORITIZE_G1_RACE)
             if g1_race_found:
+                # Reset failure count
+                FAILURE_COUNT = 0
                 continue
             else:
                 # If there is no G1 race, go back and do training
@@ -1031,7 +1052,11 @@ def career_lobby():
         # Check training button
         if not go_to_training():
             print("[INFO] Training button is not found.")
+            FAILURE_COUNT += 1
             continue
+
+        # Reset failure count
+        FAILURE_COUNT = 0
 
         # Last, do training
         time.sleep(1)
@@ -1085,10 +1110,8 @@ def career_lobby():
                     do_rest()
         elif best_training == "rest":
             do_rest()
-            continue
         elif best_training == "date":
             do_date()
-            continue
         elif best_training:
             go_to_training()
             time.sleep(0.5)
@@ -1101,4 +1124,5 @@ def career_lobby():
             do_train(best_training)
         else:
             do_rest()
+
         time.sleep(1)
