@@ -920,6 +920,7 @@ def career_lobby():
 
         if tazuna_hint is None:
             print("[INFO] Should be in career lobby.")
+            FAILURE_COUNT += 1
             continue
 
         time.sleep(0.5)
