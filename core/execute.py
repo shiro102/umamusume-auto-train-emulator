@@ -788,6 +788,7 @@ def career_lobby():
             minSearch=0.2,
             confidence=0.8 if not USE_PHONE else 0.7,
         ):
+            adb_click(360, 250)
             print("[INFO] Normal next button found, clicking...")
             continue
         
@@ -803,6 +804,7 @@ def career_lobby():
             minSearch=0.2,
             confidence=0.8 if not USE_PHONE else 0.7,
         ):
+            adb_click(360, 250)
             print("[INFO] Aoharu next button found, clicking...")
             continue
 
@@ -864,7 +866,7 @@ def career_lobby():
                     print("[INFO] Begin showdown button found, clicking...")
 
                 # See All Race Results button
-                adb_click(360, 640)
+                adb_click(360, 640) # choose middle team
                 time.sleep(1.5)
                 print("[INFO] See All Race Results button")
                 click(
@@ -875,8 +877,6 @@ def career_lobby():
 
                 # Click next button
                 time.sleep(1.5)
-                adb_click(360, 250)
-
                 print("[INFO] Clicking next button")
                 click(img="assets/buttons/next_btn.png", minSearch=2)
 
@@ -887,8 +887,6 @@ def career_lobby():
                 
                 # Click next button
                 time.sleep(1.5)
-                adb_click(360, 250)
-
                 print("[INFO] Clicking next button for Aoharu scenario")
                 click(
                     img="assets/buttons/next_btn_aoharu.png",

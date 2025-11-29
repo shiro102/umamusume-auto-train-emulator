@@ -150,5 +150,13 @@
   "Magical Flowers": {
     "key": "magical flowers",
     "choice": 2
+  },
+  "Rest Day": {
+    "key": "rest day",
+    "choice": 2
+  },
+  "A Page About Cloudy Weather": {
+    "key": "a page about",
+    "choice": 2
   }
 }
