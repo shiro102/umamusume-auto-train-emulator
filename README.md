@@ -4,6 +4,7 @@
 If you ever get tired during or after a bad run and don't want to keep training, or if you just want to farm sparks lazily, this is the solution for you. This is a simple auto-training for Umamusume.
 
 This is a fork from [samsulpanjul/umamusume-auto-train](https://github.com/samsulpanjul/umamusume-auto-train)
+
 This project is inspired by [shiokaze/UmamusumeAutoTrainer](https://github.com/shiokaze/UmamusumeAutoTrainer)
 
 [Demo & Instruction Video](https://drive.google.com/file/d/1qjyTca4c5g_eBdVxdtf-VShDrqWTWruR/view?usp=sharing)
