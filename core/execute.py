@@ -68,6 +68,8 @@ SCENARIO_NAME_MAPPING = {
     2: "aoharu",
 }
 SCENARIO_NAME = SCENARIO_NAME_MAPPING.get(SCENARIO, "ura")
+FIRST_TEAM_CHECKED = False
+
 
 training_types = {
     "spd": (
@@ -723,18 +725,23 @@ def after_race():
 def career_lobby():
     global FIRST_TURN_DONE
     global NEW_YEAR_EVENT_DONE
+    global FIRST_TEAM_CHECKED
     FAILURE_COUNT = 0
-    
-    if FAILURE_COUNT > 15:
-        from pymsgbox import confirm
-        print(
-            f"[WARNING] A large number of failures detected, requiring manual handle."
-        )
-        result = confirm(
-            text=f"A large number of failures detected, requiring manual handle. Please check the game, do that manually and then press OK to continue.",
-            title="Large number of failures detected",
-            buttons=["OK"],
-        )
+
+    def check_failure_threshold():
+        """Check if failure count exceeds threshold and prompt user if needed"""
+        nonlocal FAILURE_COUNT
+        if FAILURE_COUNT > 25:
+            from pymsgbox import confirm
+            print(
+                f"[WARNING] A large number of failures detected, requiring manual handle."
+            )
+            result = confirm(
+                text=f"A large number of failures detected, requiring manual handle. Please check the game, do that manually and then press OK to continue.",
+                title="Large number of failures detected",
+                buttons=["OK"],
+            )
+            FAILURE_COUNT = 0  # Reset after manual intervention
 
     # Warning for Aoharu scenario
     if SCENARIO == 2:
@@ -744,6 +751,8 @@ def career_lobby():
 
     # Program start
     while True:
+        # Check failure threshold at the start of each loop iteration
+        check_failure_threshold()
 
         year = check_current_year()
         event_name = check_event_name()
@@ -811,7 +820,16 @@ def career_lobby():
             minSearch=0.2,
             confidence=0.8 if not USE_PHONE else 0.7,
         ):
-            adb_click(360, 250)
+            if not FIRST_TEAM_CHECKED:
+                cancel_btn = locate_center_on_screen(
+                    template_path="assets/buttons/cancel_btn.png",
+                    min_search_time=0.2,
+                    confidence=0.8 if not USE_PHONE else 0.7,
+                )
+                if cancel_btn:
+                    adb_click(cancel_btn.x, cancel_btn.y)
+                    FIRST_TEAM_CHECKED = True
+
             print("[INFO] Aoharu next button found, clicking...")
             FAILURE_COUNT += 1
             continue
@@ -832,7 +850,7 @@ def career_lobby():
                 "assets/buttons/aoharu_run_btn.png",
                 confidence=0.75,
                 name="aoharu_run_btn",
-                debug=True,
+                debug=False,
             )
 
             if aoharu_run_btn:

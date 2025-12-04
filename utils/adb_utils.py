@@ -58,10 +58,9 @@ class ADBController:
             return False
 
         try:
-            # Move to position with duration simulation
+            # Sleep for duration to allow UI to respond
             if duration > 0:
-                # ADB doesn't support duration, so we'll just click directly
-                pass
+                time.sleep(duration)
 
             # Execute click command
             cmd = ["adb", "-s", self.device_id, "shell", "input", "tap", str(x), str(y)]
@@ -138,8 +137,11 @@ class ADBController:
 
         try:
             # For ADB, we'll just click directly since we can't move without clicking
-            # The duration parameter is kept for compatibility but not used
-            return self.click(x, y)
+            # Sleep for duration to simulate movement delay
+            if duration > 0:
+                time.sleep(duration)
+            
+            return self.click(x, y, duration=0)  # Click without additional sleep since we already slept
 
         except Exception as e:
             print(f"[ADB] Move error: {e}")
