@@ -158,5 +158,9 @@
   "A Page About Cloudy Weather": {
     "key": "a page about",
     "choice": 2
+  },
+  "Always On Stage": {
+    "key": "always on",
+    "choice": 2
   }
 }

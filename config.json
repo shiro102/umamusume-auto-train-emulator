@@ -7,7 +7,7 @@
   ],
   "minimum_mood": "GOOD",
   "maximum_failure": 15,
-  "skill_point_cap": 300,
+  "skill_point_cap": 1300,
   "enable_skill_point_check": true,
   "min_support": 2,
   "stat_caps": {
