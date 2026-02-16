@@ -21,8 +21,9 @@ THÔNG BÁO: App này sẽ đôi khi có lỗi vì nó chụp màn hình để c
 2. [Tiếng Việt](#tiếng-việt)
 
 # UPDATE:
+- Remove wit check based on spd failure rate so that it can train Sprint more effective (Feb, 16th 2026) 
 - Support Aoharu Scenario
-- Support Riko Kashimoto date
+- Support Riko Kashimoto date (outdated, will avoid Riko date)
 
 Get new updates using "git pull" in Command Prompt or PowerShell at the tool's folder location
 
@@ -42,7 +43,7 @@ Get new updates using "git pull" in Command Prompt or PowerShell at the tool's f
 
 #### Requirements
 
-- [Python 3.10+](https://www.python.org/downloads/)
+- [Python 3.10+](https://www.python.org/downloads/) (Please Python version UP TO 3.13)
 
 #### Setup
 
@@ -207,7 +208,7 @@ Dự án này được lấy cảm hứng từ [shiokaze/UmamusumeAutoTrainer](h
 ### Bắt đầu
 
 #### Yêu cầu
-- [Python 3.10+](https://www.python.org/downloads/)
+- [Python 3.10+](https://www.python.org/downloads/) (Dùng Python version KO QUÁ 3.13)
 
 #### Cài đặt
 ##### Hướng dẫn sử dụng

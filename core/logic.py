@@ -154,9 +154,9 @@ def rainbow_training(results):
             best_key, best_data = best_rainbow
 
         # If key is wit, and spd failure rate more than 5%, prefer choosing to rest, because wit training has lower failure rate
-        if best_key == "wit":
-            if spd_failure_rate > 5:
-                best_key = "rest"
+        # if best_key == "wit":
+        #     if spd_failure_rate > 5:
+        #         best_key = "rest"
 
         if best_key == "rest":
             print(

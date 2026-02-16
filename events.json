@@ -162,5 +162,13 @@
   "Always On Stage": {
     "key": "always on",
     "choice": 2
+  },
+  "The Glass Girl Wants to Study": {
+    "key": "the glass girl",
+    "choice": 2
+  },
+  "Special Drinks Made with Friends": {
+    "key": "special drinks",
+    "choice": 2
   }
 }
