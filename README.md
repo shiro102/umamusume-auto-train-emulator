@@ -43,7 +43,7 @@ Get new updates using "git pull" in Command Prompt or PowerShell at the tool's f
 
 #### Requirements
 
-- [Python 3.10+](https://www.python.org/downloads/) (Please Python version UP TO 3.13)
+- [Python 3.10+](https://www.python.org/downloads/) (Please use Python version UP TO 3.13)
 
 #### Setup
 
@@ -65,21 +65,11 @@ git clone https://github.com/shiro102/umamusume-auto-train-emulator.git
 #### BEFORE YOU START
 
 Make sure these conditions are met:
-
-For Phone
-- For phone, must use Mumu Emulator (https://www.mumuplayer.com/) and set screen resolution to 1280 x 720
+- Please use Mumu Emulator (https://www.mumuplayer.com/) and set screen resolution to 1280 x 720
 - Your Uma must have already won the trophy for each race (the bot will skip the race)
 - Turn off all confirmation pop-ups in game settings
 - The game must be in the career lobby screen (the one with the Tazuna hint icon)
 - Go to settings game to edit the race mode to "Path To Fame" to let race auto choose G1
-
-For PC (PC IS NOT SUPPORTED FOR SECOND SCENARIO AND MORE)
-- Screen resolution must be 1920x1080 for PC
-- The game should be in full screen
-- Your Uma must have already won the trophy for each race (the bot will skips the race)
-- Turn off all confirmation pop-ups in game settings
-- The game must be in the career lobby screen (the one with the Tazuna hint icon)
-- Go to settings game to edit the race mode to Path To Fame to let race auto choose G1
 
 #### Configuration
 
@@ -227,21 +217,11 @@ git clone https://github.com/shiro102/umamusume-auto-train-emulator.git
 ### TRƯỚC KHI BẮT ĐẦU
 
 Đảm bảo các điều kiện sau:
-
-#### Giả lập điện thoại
 - Dùng giả lập Mumu (https://www.mumuplayer.com/) và đặt độ phân giải 1280 x 720
 - Uma đã thắng tất cả các cúp (bot sẽ bỏ qua các cuộc đua đã có cúp)
 - Tắt tất cả các pop-up xác nhận trong cài đặt game
 - Game phải ở màn hình career lobby (có biểu tượng Tazuna hint)
 - Đặt usePhone thành true
-- Vào setting game chỉnh race mode thành Path To Fame để race auto chọn G1 khi đua
-
-#### Đối với PC (KO KHUYẾN KHÍCH DÙNG VÌ SẼ KO UPDATE KỂ TỪ SCENARIO 2)
-- Độ phân giải màn hình phải là 1920x1080
-- Game ở chế độ toàn màn hình
-- Uma đã thắng tất cả các cúp (bot sẽ bỏ qua các cuộc đua đã có cúp)
-- Tắt tất cả các pop-up xác nhận trong cài đặt game
-- Game phải ở màn hình career lobby (có biểu tượng Tazuna hint)
 - Vào setting game chỉnh race mode thành Path To Fame để race auto chọn G1 khi đua
 
 ### Cấu hình
